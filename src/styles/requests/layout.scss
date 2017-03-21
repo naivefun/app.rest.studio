@@ -1,0 +1,46 @@
+requests {
+  .sidebar {
+    width: 270px;
+    background-color: #f8f8f8;
+    border-right: 1px solid #eaeaea;
+    overflow-y: scroll;
+  }
+
+  .main {
+    flex-grow: 1;
+    display: flex;
+    background-color: #ffffff;
+
+    .request-builder {
+      width: 50%;
+      height: 100%;
+      overflow-y: scroll;
+      background-color: yellow;
+    }
+
+    .response-viewer {
+      width: 50%;
+      height: 100%;
+      overflow-y: scroll;
+      background-color: tomato;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .main {
+      flex-direction: column;
+
+      .request-builder {
+        height: 50%;
+        width: 100%;
+        background-color: yellow;
+      }
+
+      .response-viewer {
+        height: 50%;
+        width: 100%;
+        background-color: tomato;
+      }
+    }
+  }
+}
