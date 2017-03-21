@@ -2,9 +2,9 @@
  * Angular 2 decorators and services
  */
 import {
-  Component,
-  OnInit,
-  ViewEncapsulation
+    Component,
+    OnInit,
+    ViewEncapsulation
 } from '@angular/core';
 import { AppState } from './app.service';
 import * as _ from 'lodash';
@@ -14,26 +14,22 @@ import * as _ from 'lodash';
  * Top Level Component
  */
 @Component({
-  selector: 'app',
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: [
-    './app.component.css'
-  ],
-  template: `
-    <h1>Hello World</h1>
-    <router-outlet></router-outlet>
-  `
+    selector: 'app',
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: [
+        './app.component.css'
+    ],
+    templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public name = 'app.rest.studio';
+    public name = 'app.rest.studio';
 
-  constructor(
-    public appState: AppState
-  ) {}
+    constructor(public appState: AppState) {
+    }
 
-  public ngOnInit() {
-    console.log('Initial App State', this.appState.state, _.trim(null));
-  }
+    public ngOnInit() {
+        console.log('Initial App State', this.appState.state, _.trim(null));
+    }
 
 }
 
