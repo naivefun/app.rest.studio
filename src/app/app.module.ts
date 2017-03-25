@@ -28,6 +28,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { RequestsEffects } from './requests/store/effect';
 import { RouterStoreModule } from '@ngrx/router-store';
 import { RequestsRequestComponent } from './requests/component/request/request.component';
+import { RequestBuilderComponent } from './requests/component/request/request-builder.component';
+import { ResponseViewerComponent } from './requests/component/request/response-viewer.component';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -52,6 +54,8 @@ type StoreType = {
         RequestsComponent,
         RequestsRequestComponent,
         RequestsSidebarComponent,
+        RequestBuilderComponent,
+        ResponseViewerComponent
     ],
     imports: [ // import Angular's modules
         BrowserModule,

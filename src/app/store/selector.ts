@@ -1,7 +1,7 @@
 import { State } from './reducer';
 import { createSelector } from 'reselect';
 import {
-    getActiveRequest, getActiveRequestId, getRequests
+    getActiveRequest, getActiveRequestId, getActiveResponse, getRequests
 }
     from '../requests/store/selector';
 
@@ -16,3 +16,5 @@ export const getRequestsActiveId =
     createSelector(getRequestsState, getActiveRequestId);
 export const getRequestsActiveRequest =
     createSelector(getRequestsState, getActiveRequest);
+export const getRequestsActiveResponse =
+    createSelector(getRequestsState, getActiveResponse);

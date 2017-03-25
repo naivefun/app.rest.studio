@@ -1,6 +1,7 @@
 <div class="request-builder">
-    <h1>Request Builder {{id}}</h1>
+    <request-builder [id]="id" [request]="request$ | async"></request-builder>
 </div>
 <div class="response-viewer">
-    <h1>Repsonse Viewer {{id}}</h1>
+    <response-viewer [id]="id" [request]="request$ | async"
+                     [response]="response$ | async"></response-viewer>
 </div>
