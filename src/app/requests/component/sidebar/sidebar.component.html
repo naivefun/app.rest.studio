@@ -1,0 +1,9 @@
+<a (click)="createRequest()">Create Request</a>
+
+<ul>
+    <li *ngFor="let request of requests">
+        <a [ngClass]="{b: request.id === activeRequestId}"
+           [routerLink]="['/requests', request.id]">{{request.id}}</a>
+        <a (click)="deleteRequest(request.id)">Delete</a>
+    </li>
+</ul>

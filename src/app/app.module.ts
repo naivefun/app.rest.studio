@@ -21,6 +21,13 @@ import { XLargeDirective } from './home/x-large';
 import '../styles/styles.scss';
 import '../styles/headings.css';
 import { RequestsComponent } from './requests/requests.component';
+import { RequestsSidebarComponent } from './requests/component/sidebar/sidebar.component';
+import { StoreModule } from '@ngrx/store';
+import { reducer } from './store/reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { RequestsEffects } from './requests/store/effect';
+import { RouterStoreModule } from '@ngrx/router-store';
+import { RequestsRequestComponent } from './requests/component/request/request.component';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -42,13 +49,19 @@ type StoreType = {
     declarations: [
         AppComponent,
         NoContentComponent,
-        RequestsComponent
+        RequestsComponent,
+        RequestsRequestComponent,
+        RequestsSidebarComponent,
     ],
     imports: [ // import Angular's modules
         BrowserModule,
         FormsModule,
         HttpModule,
-        RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules })
+        RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
+        // store
+        StoreModule.provideStore(reducer),
+        EffectsModule.run(RequestsEffects),
+        RouterStoreModule.connectRouter()
     ],
     providers: [ // expose our Services and Providers into Angular's dependency injection
         ENV_PROVIDERS,

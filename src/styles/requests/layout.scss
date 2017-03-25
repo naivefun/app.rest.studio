@@ -11,6 +11,12 @@ requests {
     display: flex;
     background-color: #ffffff;
 
+    requests-request {
+      flex-grow: 1;
+      display: flex;
+      height: 100%;
+    }
+
     .request-builder {
       width: 50%;
       height: 100%;
@@ -30,16 +36,20 @@ requests {
     .main {
       flex-direction: column;
 
-      .request-builder {
-        height: 50%;
-        width: 100%;
-        background-color: yellow;
-      }
+      requests-request {
+        flex-direction: column;
 
-      .response-viewer {
-        height: 50%;
-        width: 100%;
-        background-color: tomato;
+        .request-builder {
+          height: 50%;
+          width: 100%;
+          background-color: yellow;
+        }
+
+        .response-viewer {
+          height: 50%;
+          width: 100%;
+          background-color: tomato;
+        }
       }
     }
   }
