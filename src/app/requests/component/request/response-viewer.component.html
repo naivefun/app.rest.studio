@@ -1,7 +1,14 @@
-<h1>JSON Viewer {{id}}</h1>
-<div>
-    {{response}}
+<div class="toolbar">
+    <a>Preview</a>
+    <a>Response</a>
+    <a>Headers</a>
+    <a>Formatter</a>
 </div>
-<div>
-    <pre>{{(request || {}) | json}}</pre>
+<div class="content">
+    <div>
+        {{response}}
+    </div>
+    <div>
+        <pre>{{(previewRequest || {}) | json}}</pre>
+    </div>
 </div>

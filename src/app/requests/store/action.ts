@@ -5,6 +5,7 @@ import { DefaultHttpRequest } from '../../@model/http/http-request';
 export const RequestsActionTypes = {
     CREATE_REQUEST: type('CREATE_REQUEST'),
     SELECT_REQUEST: type('SELECT_REQUEST'),
+    UPDATE_REQUEST: type('UPDATE_REQUEST'),
     SAVE_REQUEST: type('SAVE_REQUEST'),
     SAVE_REQUEST_SUCCESS: type('SAVE_REQUEST_SUCCESS'),
     DELETE_REQUEST: type('DELETE_REQUEST'),
@@ -15,6 +16,7 @@ export const RequestsActionTypes = {
 
 export type RequestsActions =
     CreateRequestAction |
+    UpdateRequestAction |
     SaveRequestAction |
     DeleteRequestAction |
     LoadRequestsAction
@@ -23,6 +25,13 @@ export type RequestsActions =
 // region Action Definition
 export class CreateRequestAction implements Action {
     public type = RequestsActionTypes.CREATE_REQUEST;
+
+    constructor(public payload: DefaultHttpRequest) {
+    }
+}
+
+export class UpdateRequestAction implements Action {
+    public type = RequestsActionTypes.UPDATE_REQUEST;
 
     constructor(public payload: DefaultHttpRequest) {
     }

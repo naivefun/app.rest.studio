@@ -17,18 +17,45 @@ requests {
       height: 100%;
     }
 
-    .request-builder {
+    request-builder {
       width: 50%;
       height: 100%;
       overflow-y: scroll;
-      background-color: yellow;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #eaeaea;
+
+      .toolbar {
+        background-color: #f4f4f4;
+        border-bottom: 1px solid #eaeaea;
+        padding: .4em;
+      }
+
+      .content {
+        flex-grow: 1;
+        background-color: #fff;
+        overflow-y: scroll;
+      }
     }
 
-    .response-viewer {
+    response-viewer {
       width: 50%;
       height: 100%;
       overflow-y: scroll;
-      background-color: tomato;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+
+      .toolbar {
+        background-color: #f4f4f4;
+        border-bottom: 1px solid #eaeaea;
+        padding: .4em;
+      }
+
+      .content {
+        flex-grow: 1;
+        background-color: #fcfcfc;
+      }
     }
   }
 
@@ -39,13 +66,14 @@ requests {
       requests-request {
         flex-direction: column;
 
-        .request-builder {
+        request-builder {
           height: 50%;
           width: 100%;
           background-color: yellow;
+          border: none;
         }
 
-        .response-viewer {
+        response-viewer {
           height: 50%;
           width: 100%;
           background-color: tomato;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { State } from '../../../store/reducer';
 import { Store } from '@ngrx/store';
-import { SelectRequestAction } from '../../store/action';
+import { SelectRequestAction, UpdateRequestAction } from '../../store/action';
 import { Observable } from 'rxjs';
 import { DefaultHttpRequest } from '../../../@model/http/http-request';
 import { getRequestsActiveRequest, getRequestsActiveResponse } from '../../../store/selector';
@@ -39,6 +39,10 @@ export class RequestsRequestComponent implements OnInit {
     }
 
     public onRequestUpdated(request: DefaultHttpRequest) {
-        this.request = _.cloneDeep(request);
+        if (this.request.url !== request.url) {
+            this.store.dispatch(new UpdateRequestAction(request));
+        } else {
+            this.request = _.cloneDeep(request);
+        }
     }
 }

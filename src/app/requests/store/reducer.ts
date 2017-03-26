@@ -8,6 +8,8 @@ export function reducer(state = RequestsInitialState, action: RequestsActions): 
     switch (action.type) {
         case RequestsActionTypes.LOAD_REQUESTS:
             return handleLoadRequests(state);
+        case RequestsActionTypes.UPDATE_REQUEST:
+            return handleUpdateRequest(state, action.payload as DefaultHttpRequest);
         case RequestsActionTypes.CREATE_REQUEST:
             return handleCreateRequest(state, action.payload as DefaultHttpRequest);
         case RequestsActionTypes.SAVE_REQUEST:
@@ -30,6 +32,21 @@ function handleCreateRequest(state: RequestsState, request: DefaultHttpRequest) 
     request = request || new DefaultHttpRequest('http://');
     let requests = [request, ...state.requests];
     console.debug('created request', requests);
+    return mergeState(state, { requests });
+}
+
+function handleUpdateRequest(state: RequestsState, request: DefaultHttpRequest) {
+    let requests = state.requests;
+    if (request) {
+        requests = requests.map(req => {
+            if (req.id === request.id) {
+                return request;
+            }
+
+            return req;
+        });
+    }
+
     return mergeState(state, { requests });
 }
 

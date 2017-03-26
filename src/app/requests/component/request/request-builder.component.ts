@@ -1,10 +1,15 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { DefaultHttpRequest, HTTP_METHODS, HttpMethod } from '../../../@model/http/http-request';
 import * as _ from 'lodash';
 
 @Component({
     selector: 'request-builder',
-    templateUrl: './request-builder.component.html'
+    templateUrl: './request-builder.component.html',
+    styles: [`
+        .section {
+            padding: 1em;
+        }
+    `]
 })
 export class RequestBuilderComponent implements OnChanges {
 
@@ -14,11 +19,13 @@ export class RequestBuilderComponent implements OnChanges {
     public methods = HTTP_METHODS;
 
     private _request: DefaultHttpRequest; // internal request
+    @ViewChild('urlInput')
+    urlInput: ElementRef;
 
     public ngOnChanges(changes: SimpleChanges): void {
         let request = changes['request'];
         if (request && request.currentValue) {
-            this.reset();
+            this.reset(request.isFirstChange());
         }
 
         console.debug('[requestBuilder] changes', changes);
@@ -33,8 +40,13 @@ export class RequestBuilderComponent implements OnChanges {
         console.debug('value', this._request);
     }
 
-    public reset() {
+    public reset(firstChange: boolean) {
         this._request = _.cloneDeep(this.request);
+        setTimeout(() => {
+            if (this.urlInput && this.urlInput.nativeElement) {
+                this.urlInput.nativeElement.focus();
+            }
+        }, 100);
     }
 
     public emitChanges() {

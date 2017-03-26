@@ -42,6 +42,7 @@
     "use-output-property-decorator": true,
     "use-pipe-transform-interface": true,
     // General
+    "curly": false,
     "max-classes-per-file": false,
     "new-parens": false,
     "arrow-parens": false,

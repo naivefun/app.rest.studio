@@ -1,9 +1,11 @@
-<a (click)="createRequest()">Create Request</a>
+<a class="link btn-create-request ion-plus" (click)="createRequest()"> Create Request</a>
 
-<ul>
-    <li *ngFor="let request of requests">
-        <a [ngClass]="{b: request.id === activeRequestId}"
-           [routerLink]="['/requests', request.id]">{{request.id}}</a>
-        <a (click)="deleteRequest(request.id)">Delete</a>
+<ul class="list-unstyled">
+    <li *ngFor="let request of requests"
+        class="link"
+        [routerLink]="['/requests', request.id]"
+        [ngClass]="{active: request.id === activeRequestId}">
+        <a class="ion-close p-1" (click)="deleteRequest(request.id)"> </a>
+        {{request.url || request.id}}
     </li>
 </ul>

@@ -1,37 +1,40 @@
-<h1 (click)="run()">Request Form {{id}}</h1>
-
-<div *ngIf="_request">
+<div class="toolbar">
+    <a *ngFor="let field of ['Query', 'Path', 'Header', 'Body']">{{field}}</a>
+</div>
+<div class="content" *ngIf="_request">
     <div class="section">
-        <h3>Basic</h3>
-        <input type="text" class="form-control" [(ngModel)]="_request.url"
-               (change)="emitChanges()"/>
-        <input type="text" class="form-control" [(ngModel)]="_request.method"
-               (change)="emitChanges()"/>
-        <div class="btn-group">
-            <a class="link dropdown-toggle" data-toggle="dropdown">
-                {{_request.method}}
-            </a>
-            <div class="dropdown-menu">
-                <a *ngFor="let method of methods"
-                   class="link dropdown-item"
-                   (click)="setMethod(method)">{{method}}</a>
+        <div class="b">Basic</div>
+        <div style="display: flex; align-items: center;">
+            <div class="btn-group">
+                <a class="link dropdown-toggle" data-toggle="dropdown">
+                    {{_request.method}}
+                </a>
+                <div class="dropdown-menu">
+                    <a *ngFor="let method of methods"
+                       class="link dropdown-item"
+                       (click)="setMethod(method)">{{method}}</a>
+                </div>
+            </div>
+            <div style="flex-grow: 100; margin-left: .5em;">
+                <input #urlInput type="text" class="form-control" [(ngModel)]="_request.url"
+                       (change)="emitChanges()"/>
             </div>
         </div>
     </div>
     <div class="section">
-        <h3>Query Parameters</h3>
+        <div class="b">Query Parameters</div>
         <request-param-group [paramGroup]="_request.queryParams"
                              (paramsUpdated)="emitChanges()">
         </request-param-group>
     </div>
     <div class="section">
-        <h3>Header Parameters</h3>
+        <div class="b">Header Parameters</div>
         <request-param-group [paramGroup]="_request.headerParams"
                              (paramsUpdated)="emitChanges()">
         </request-param-group>
     </div>
     <div class="section">
-        <h3>Form Parameters</h3>
+        <div class="b">Form Parameters</div>
         <request-param-group [paramGroup]="_request.formParams"
                              (paramsUpdated)="emitChanges()">
         </request-param-group>
