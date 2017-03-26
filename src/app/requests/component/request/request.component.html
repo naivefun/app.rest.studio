@@ -1,7 +1,8 @@
 <div class="request-builder">
-    <request-builder [id]="id" [request]="request$ | async"></request-builder>
+    <request-builder [id]="id" [request]="request$ | async"
+                     (requestUpdated)="onRequestUpdated($event)"></request-builder>
 </div>
 <div class="response-viewer">
-    <response-viewer [id]="id" [request]="request$ | async"
+    <response-viewer [id]="id" [request]="request"
                      [response]="response$ | async"></response-viewer>
 </div>

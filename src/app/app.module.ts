@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { ApplicationRef, NgModule } from '@angular/core';
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
@@ -30,6 +30,7 @@ import { RouterStoreModule } from '@ngrx/router-store';
 import { RequestsRequestComponent } from './requests/component/request/request.component';
 import { RequestBuilderComponent } from './requests/component/request/request-builder.component';
 import { ResponseViewerComponent } from './requests/component/request/response-viewer.component';
+import { ParamGroupComponent } from './requests/component/request/param-group/param-group.component';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -55,11 +56,13 @@ type StoreType = {
         RequestsRequestComponent,
         RequestsSidebarComponent,
         RequestBuilderComponent,
-        ResponseViewerComponent
+        ResponseViewerComponent,
+        ParamGroupComponent,
     ],
     imports: [ // import Angular's modules
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         HttpModule,
         RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
         // store

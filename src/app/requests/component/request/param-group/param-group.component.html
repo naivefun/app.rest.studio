@@ -1,0 +1,20 @@
+<h3>Param Group</h3>
+
+<div>
+    <div *ngFor="let param of paramGroup">
+        <div class="row">
+            <div class="col-md-3">
+                <input type="text" class="form-control" placeholder="parameter key"
+                       [(ngModel)]="param.key"
+                       (change)="emitChanges()"/>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control" placeholder="value"
+                       [(ngModel)]="param.value"
+                       (change)="emitChanges()"/>
+            </div>
+        </div>
+    </div>
+    <input type="text" class="form-control" placeholder="enter to add parameter"
+           (keyup.enter)="add($event)"/>
+</div>

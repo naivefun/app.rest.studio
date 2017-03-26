@@ -1,4 +1,39 @@
-<h1>Request Form {{id}}</h1>
-<div *ngIf="request">
-    <h2>{{request.method}}: {{request.url}}</h2>
+<h1 (click)="run()">Request Form {{id}}</h1>
+
+<div *ngIf="_request">
+    <div class="section">
+        <h3>Basic</h3>
+        <input type="text" class="form-control" [(ngModel)]="_request.url"
+               (change)="emitChanges()"/>
+        <input type="text" class="form-control" [(ngModel)]="_request.method"
+               (change)="emitChanges()"/>
+        <div class="btn-group">
+            <a class="link dropdown-toggle" data-toggle="dropdown">
+                {{_request.method}}
+            </a>
+            <div class="dropdown-menu">
+                <a *ngFor="let method of methods"
+                   class="link dropdown-item"
+                   (click)="setMethod(method)">{{method}}</a>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <h3>Query Parameters</h3>
+        <request-param-group [paramGroup]="_request.queryParams"
+                             (paramsUpdated)="emitChanges()">
+        </request-param-group>
+    </div>
+    <div class="section">
+        <h3>Header Parameters</h3>
+        <request-param-group [paramGroup]="_request.headerParams"
+                             (paramsUpdated)="emitChanges()">
+        </request-param-group>
+    </div>
+    <div class="section">
+        <h3>Form Parameters</h3>
+        <request-param-group [paramGroup]="_request.formParams"
+                             (paramsUpdated)="emitChanges()">
+        </request-param-group>
+    </div>
 </div>
