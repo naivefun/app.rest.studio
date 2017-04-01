@@ -31,11 +31,17 @@ import { RequestsRequestComponent } from './requests/component/request/request.c
 import { RequestBuilderComponent } from './requests/component/request/request-builder.component';
 import { ResponseViewerComponent } from './requests/component/request/response-viewer.component';
 import { ParamGroupComponent } from './requests/component/request/param-group/param-group.component';
+import { TitleCasePipe } from './@shared/pipes/title-case.pipe';
+import { CodePipe } from './@shared/pipes/code.pipe';
+import { ChromeService } from './@shared/chrome.service';
+import { DefaultHttpClient } from './@shared/http.service';
 
 // Application wide providers
 const APP_PROVIDERS = [
     ...APP_RESOLVER_PROVIDERS,
-    AppState
+    AppState,
+    ChromeService,
+    DefaultHttpClient
 ];
 
 type StoreType = {
@@ -58,6 +64,10 @@ type StoreType = {
         RequestBuilderComponent,
         ResponseViewerComponent,
         ParamGroupComponent,
+
+        // pipes
+        TitleCasePipe,
+        CodePipe,
     ],
     imports: [ // import Angular's modules
         BrowserModule,

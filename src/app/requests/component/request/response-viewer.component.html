@@ -1,14 +1,21 @@
 <div class="toolbar">
-    <a>Preview</a>
-    <a>Response</a>
-    <a>Headers</a>
-    <a>Formatter</a>
+    <a *ngFor="let v of availableViews"
+       class="link p-1" [ngClass]="{on: view === v}"
+       (click)="switchView(v)">{{v | rsTitleCase}}</a>
 </div>
-<div class="content">
-    <div>
-        {{response}}
+<div class="content" [ngSwitch]="view">
+    <div class="flex flex-1 p-2" *ngSwitchCase="'body'">
+        <!--<textarea class="code form-control flex-1 p-1"
+                  style="border: 1px solid #eaeaea;">{{response?.data | json}}</textarea>-->
+        <pre class="flex-1" [innerHtml]="response?.data | rsCode" *ngIf="response?.data"></pre>
     </div>
-    <div>
-        <pre>{{(previewRequest || {}) | json}}</pre>
+    <div class="flex flex-1 p-2" *ngSwitchCase="'header'">
+        <pre class="flex-1" [innerHtml]="response?.headers | json | rsCode"></pre>
+    </div>
+    <div class="flex flex-1 p-2" *ngSwitchCase="'preview'">
+        <pre class="flex-1" [innerHtml]="(previewRequest || {}) | json | rsCode"></pre>
+    </div>
+    <div class="flex flex-1 p-2" *ngSwitchCase="'schema'">
+        <pre class="flex-1" [innerHtml]="(schema || {}) | json | rsCode"></pre>
     </div>
 </div>

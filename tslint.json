@@ -33,7 +33,7 @@
     "pipe-naming": [
       true,
       "camelCase",
-      "my"
+      "rs"
     ],
     "templates-use-public": true,
     "use-host-property-decorator": true,

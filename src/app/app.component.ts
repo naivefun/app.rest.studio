@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { AppState } from './app.service';
 import * as _ from 'lodash';
+import { DefaultHttpRequest, HttpRequestParam } from './@model/http/http-request';
+import { DefaultHttpClient } from './@shared/http.service';
 
 /*
  * App Component

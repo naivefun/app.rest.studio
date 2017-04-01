@@ -7,10 +7,22 @@ button, input, optgroup, select, textarea {
 
 code, pre, .code {
   font-family: $codeFont;
+  white-space: pre-wrap;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
+}
+
+a:not([href]):not([tabindex]),
+a {
+  color: #0074D9;
+}
+
+a:not([href]):not([tabindex]).on,
+a.on {
+  color: #444;
+  font-weight: bold;
 }
 
 .b {
@@ -23,6 +35,27 @@ h1, h2, h3, h4, h5, h6 {
 
 .link {
   cursor: pointer;
+}
+
+.light-text {
+  color: #aaa !important;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex-grow: 1;
+}
+
+.flex-100 {
+  flex-grow: 100;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
 }
 
 // bootstrap

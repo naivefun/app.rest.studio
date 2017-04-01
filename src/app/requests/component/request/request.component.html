@@ -1,4 +1,5 @@
 <request-builder [id]="id" [request]="request$ | async"
+                 (sendRequest)="onSendRequest($event)"
                  (requestUpdated)="onRequestUpdated($event)"></request-builder>
 <response-viewer [id]="id" [request]="request"
                  [response]="response$ | async"></response-viewer>

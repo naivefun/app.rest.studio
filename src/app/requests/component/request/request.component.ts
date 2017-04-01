@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { State } from '../../../store/reducer';
 import { Store } from '@ngrx/store';
-import { SelectRequestAction, UpdateRequestAction } from '../../store/action';
+import { ResponseReceivedAction, SelectRequestAction, UpdateRequestAction } from '../../store/action';
 import { Observable } from 'rxjs';
 import { DefaultHttpRequest } from '../../../@model/http/http-request';
 import { getRequestsActiveRequest, getRequestsActiveResponse } from '../../../store/selector';
 import { DefaultHttpResponse } from '../../../@model/http/http-response';
 import * as _ from 'lodash';
+import { DefaultHttpClient } from '../../../@shared/http.service';
 
 @Component({
     selector: 'requests-request',
@@ -21,11 +22,15 @@ export class RequestsRequestComponent implements OnInit {
     public request: DefaultHttpRequest;
 
     constructor(private store: Store<State>,
+                private httpClient: DefaultHttpClient,
                 private route: ActivatedRoute) {
         this.request$ = store.select(getRequestsActiveRequest);
         this.response$ = store.select(getRequestsActiveResponse);
 
         this.request$.subscribe(request => this.request = request);
+        this.response$.subscribe(response => {
+            console.debug('response changed', response);
+        });
     }
 
     public ngOnInit() {
@@ -44,5 +49,14 @@ export class RequestsRequestComponent implements OnInit {
         } else {
             this.request = _.cloneDeep(request);
         }
+    }
+
+    public onSendRequest(request: DefaultHttpRequest) {
+        this.httpClient.execute(request)
+            .then(resp => {
+                console.debug(resp);
+                resp.requestId = request.id;
+                this.store.dispatch(new ResponseReceivedAction(resp));
+            });
     }
 }

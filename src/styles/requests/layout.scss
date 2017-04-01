@@ -1,6 +1,7 @@
 requests {
   .sidebar {
     width: 270px;
+    min-width: 220px;
     background-color: #f8f8f8;
     border-right: 1px solid #eaeaea;
     overflow-y: scroll;
@@ -54,6 +55,7 @@ requests {
 
       .content {
         flex-grow: 1;
+        display: flex;
         background-color: #fcfcfc;
       }
     }

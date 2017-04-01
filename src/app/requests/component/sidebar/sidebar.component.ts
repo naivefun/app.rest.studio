@@ -50,7 +50,7 @@ export class RequestsSidebarComponent {
     }
 
     public createRequest() {
-        let request = new DefaultHttpRequest('http://www.yahoo.com');
+        let request = DefaultHttpRequest.defaultRequest();
         this.store.dispatch(new CreateRequestAction(request));
     }
 
