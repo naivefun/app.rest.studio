@@ -35,11 +35,13 @@ import { TitleCasePipe } from './@shared/pipes/title-case.pipe';
 import { CodePipe } from './@shared/pipes/code.pipe';
 import { ChromeService } from './@shared/chrome.service';
 import { DefaultHttpClient } from './@shared/http.service';
+import { ConfigService } from './@shared/config.service';
 
 // Application wide providers
 const APP_PROVIDERS = [
     ...APP_RESOLVER_PROVIDERS,
     AppState,
+    ConfigService,
     ChromeService,
     DefaultHttpClient
 ];
