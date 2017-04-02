@@ -36,6 +36,8 @@ import { CodePipe } from './@shared/pipes/code.pipe';
 import { ChromeService } from './@shared/chrome.service';
 import { DefaultHttpClient } from './@shared/http.service';
 import { ConfigService } from './@shared/config.service';
+import { YamlPipe } from './@shared/pipes/yaml.pipe';
+import { TextEditorComponent } from './@shared/components/text-editor.component';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -67,9 +69,13 @@ type StoreType = {
         ResponseViewerComponent,
         ParamGroupComponent,
 
+        // shared,
+        TextEditorComponent,
+
         // pipes
         TitleCasePipe,
         CodePipe,
+        YamlPipe
     ],
     imports: [ // import Angular's modules
         BrowserModule,

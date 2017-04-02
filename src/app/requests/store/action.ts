@@ -13,7 +13,8 @@ export const RequestsActionTypes = {
     DELETE_REQUEST: type('DELETE_REQUEST'),
     DELETE_REQUEST_SUCCESS: type('DELETE_REQUEST_SUCCESS'),
     LOAD_REQUESTS: type('LOAD_REQUESTS'),
-    LOAD_REQUESTS_SUCCESS: type('LOAD_REQUESTS_SUCCESS')
+    LOAD_REQUESTS_SUCCESS: type('LOAD_REQUESTS_SUCCESS'),
+    CLEAR_RESPONSE: type('CLEAR_RESPONSE')
 };
 
 export type RequestsActions =
@@ -79,6 +80,13 @@ export class LoadRequestsSuccessAction implements Action {
     public type = RequestsActionTypes.LOAD_REQUESTS_SUCCESS;
 
     constructor(public payload: DefaultHttpRequest[]) {
+    }
+}
+
+export class ClearResponseAction implements Action {
+    public type = RequestsActionTypes.CLEAR_RESPONSE;
+
+    constructor(public payload: string) {
     }
 }
 // endregion

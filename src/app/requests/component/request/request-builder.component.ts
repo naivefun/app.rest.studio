@@ -37,8 +37,8 @@ export class RequestBuilderComponent implements OnChanges {
 
     @Input() public id: string;
     @Input() public request: DefaultHttpRequest;
-    @Output() public requestUpdated = new EventEmitter<DefaultHttpRequest>();
-    @Output() public sendRequest = new EventEmitter<DefaultHttpRequest>();
+    @Output() public onRequestUpdated = new EventEmitter<DefaultHttpRequest>();
+    @Output() public onSendRequest = new EventEmitter<DefaultHttpRequest>();
     public methods = HTTP_METHODS;
     public off: any = {};
 
@@ -70,7 +70,7 @@ export class RequestBuilderComponent implements OnChanges {
 
     public run() {
         console.debug('value', this._request);
-        this.sendRequest.emit(this._request);
+        this.onSendRequest.emit(this._request);
     }
 
     public reset(firstChange: boolean) {
@@ -83,6 +83,6 @@ export class RequestBuilderComponent implements OnChanges {
     }
 
     public emitChanges() {
-        this.requestUpdated.emit(this._request);
+        this.onRequestUpdated.emit(this._request);
     }
 }

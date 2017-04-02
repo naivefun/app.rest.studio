@@ -25,6 +25,8 @@ export function reducer(state = RequestsInitialState, action: RequestsActions): 
             return handleSelectRequest(state, action.payload as string);
         case RequestsActionTypes.RESPONSE_RECEIVED:
             return handleResponseReceived(state, action.payload as DefaultHttpResponse);
+        case RequestsActionTypes.CLEAR_RESPONSE:
+            return handleClearResponse(state, action.payload as string);
         default:
             return state;
     }
@@ -108,6 +110,12 @@ function handleSelectRequest(state: RequestsState, id: string) {
 function handleResponseReceived(state: RequestsState, response: DefaultHttpResponse) {
     let responses = _.clone(state.responses);
     responses[response.requestId] = response;
+    return mergeState(state, { responses });
+}
+
+function handleClearResponse(state: RequestsState, requestId: string) {
+    let responses = _.clone(state.responses);
+    responses[requestId] = null;
     return mergeState(state, { responses });
 }
 

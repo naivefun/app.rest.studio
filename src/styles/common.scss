@@ -7,7 +7,11 @@ button, input, optgroup, select, textarea {
 
 code, pre, .code {
   font-family: $codeFont;
+}
+
+code, pre {
   white-space: pre-wrap;
+  word-break: break-all;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -23,6 +27,31 @@ a:not([href]):not([tabindex]).on,
 a.on {
   color: #444;
   font-weight: bold;
+}
+
+.full-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.padding-less {
+  padding: 0 !important;
+}
+
+.margin-less {
+  margin: 0 !important;
+}
+
+.full-screen {
+  flex-grow: 1000;
+}
+
+.font-small {
+  font-size: .8em;
 }
 
 .b {

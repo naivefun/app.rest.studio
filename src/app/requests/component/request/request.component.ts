@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { State } from '../../../store/reducer';
 import { Store } from '@ngrx/store';
-import { ResponseReceivedAction, SelectRequestAction, UpdateRequestAction } from '../../store/action';
+import {
+    ClearResponseAction, ResponseReceivedAction, SelectRequestAction,
+    UpdateRequestAction
+} from '../../store/action';
 import { Observable } from 'rxjs';
 import { DefaultHttpRequest } from '../../../@model/http/http-request';
 import { getRequestsActiveRequest, getRequestsActiveResponse } from '../../../store/selector';
@@ -58,5 +61,9 @@ export class RequestsRequestComponent implements OnInit {
                 resp.requestId = request.id;
                 this.store.dispatch(new ResponseReceivedAction(resp));
             });
+    }
+
+    public onClearResponse(requestId: string) {
+        this.store.dispatch(new ClearResponseAction(requestId));
     }
 }

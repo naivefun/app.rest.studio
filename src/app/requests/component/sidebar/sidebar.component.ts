@@ -12,7 +12,7 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
             display: block;
             text-align: center;
             padding: .5em;
-            background-color: slategray;
+            background-color: #2c81a9;
             color: #ddd;
             font-weight: 400;
             transition-property: all;
@@ -20,11 +20,12 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
         }
 
         a.btn-create-request:hover {
-            background-color: darkslategray;
+            background-color: #31a0c9;
             color: #fff;
         }
 
         li {
+            display: block;
             padding: .4em .5em;
             word-wrap: break-word;
             line-height: 130%;
@@ -32,13 +33,32 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
             transition-duration: .2s;
         }
 
+        li a {
+            display: table-cell;
+        }
+
+        li span {
+            display: table-cell;
+            word-break: break-all;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 20px;
+            font-size: 12px;
+        }
+
+        li:hover {
+            background-color: #eee;
+        }
+
         li.active {
-            background-color: #287ec3;
-            color: #efefef;
+            background-color: #e8e8e8;
+            color: #666;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
         }
 
         li.active a {
-            color: #efefef;
+            color: darkslateblue;
         }
     `]
 })

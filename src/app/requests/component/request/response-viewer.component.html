@@ -1,21 +1,49 @@
 <div class="toolbar">
-    <a *ngFor="let v of availableViews"
-       class="link p-1" [ngClass]="{on: view === v}"
-       (click)="switchView(v)">{{v | rsTitleCase}}</a>
+    <div class="flex-100">
+        <a *ngFor="let v of availableViews"
+           class="link p-1" [ngClass]="{on: view === v}"
+           (click)="switchView(v)">{{v | rsTitleCase}}</a>
+    </div>
+    <div class="flex-1 font-small code">
+        <span>100ms</span>
+        <span>200</span>
+        <span>ok</span>
+    </div>
+    <div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle link ion-grid" data-toggle="dropdown">
+
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item link" (click)="digest()">View Digest</a>
+                <a class="dropdown-item link" (click)="viewAsJson()">View As JSON</a>
+                <a class="dropdown-item link" (click)="viewAsYaml()">View As YAML</a>
+                <a class="dropdown-item link" (click)="viewAsHtml()">View As HTML</a>
+                <a class="dropdown-item link" (click)="viewAsXml()">View As XML</a>
+                <a class="dropdown-item link" (click)="fullScreen = true">Full Screen</a>
+                <a class="dropdown-item link" (click)="clearResponse()">Clear</a>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="content" [ngSwitch]="view">
-    <div class="flex flex-1 p-2" *ngSwitchCase="'body'">
+    <div class="flex flex-1" *ngSwitchCase="'body'">
         <!--<textarea class="code form-control flex-1 p-1"
                   style="border: 1px solid #eaeaea;">{{response?.data | json}}</textarea>-->
-        <pre class="flex-1" [innerHtml]="response?.data | rsCode" *ngIf="response?.data"></pre>
+        <!--<pre class="flex-1 margin-less" [innerHtml]="bodyHtml | rsCode" *ngIf="bodyHtml"></pre>-->
+        <text-editor [text]="bodyString" [mode]="bodyTextMode"
+                     [fullScreen]="fullScreen" [observeText]="true"
+                     [wrap]="true"
+                     [lineNumbers]="true"
+                     (onFullScreenChanged)="fullScreen = $event"></text-editor>
     </div>
     <div class="flex flex-1 p-2" *ngSwitchCase="'header'">
-        <pre class="flex-1" [innerHtml]="response?.headers | json | rsCode"></pre>
+        <pre class="flex-1" [innerHtml]="response?.headers | rsYaml | rsCode"></pre>
     </div>
     <div class="flex flex-1 p-2" *ngSwitchCase="'preview'">
-        <pre class="flex-1" [innerHtml]="(previewRequest || {}) | json | rsCode"></pre>
+        <pre class="flex-1" [innerHtml]="(previewRequest || {}) | rsYaml | rsCode"></pre>
     </div>
     <div class="flex flex-1 p-2" *ngSwitchCase="'schema'">
-        <pre class="flex-1" [innerHtml]="(schema || {}) | json | rsCode"></pre>
+        <pre class="flex-1" [innerHtml]="(schema || {}) | rsYaml | rsCode"></pre>
     </div>
 </div>

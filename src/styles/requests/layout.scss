@@ -1,7 +1,7 @@
 requests {
   .sidebar {
     width: 270px;
-    min-width: 220px;
+    min-width: 270px;
     background-color: #f8f8f8;
     border-right: 1px solid #eaeaea;
     overflow-y: scroll;
@@ -11,6 +11,16 @@ requests {
     flex-grow: 1;
     display: flex;
     background-color: #ffffff;
+
+    .toolbar {
+      display: flex;
+      height: 35px;
+      min-height: 35px;
+      align-items: center;
+      background-color: #f4f4f4;
+      border-bottom: 1px solid #eaeaea;
+      padding: .4em;
+    }
 
     requests-request {
       flex-grow: 1;
@@ -26,12 +36,6 @@ requests {
       flex-direction: column;
       border-right: 1px solid #eaeaea;
 
-      .toolbar {
-        background-color: #f4f4f4;
-        border-bottom: 1px solid #eaeaea;
-        padding: .4em;
-      }
-
       .content {
         flex-grow: 1;
         background-color: #fff;
@@ -46,12 +50,6 @@ requests {
       background-color: #fff;
       display: flex;
       flex-direction: column;
-
-      .toolbar {
-        background-color: #f4f4f4;
-        border-bottom: 1px solid #eaeaea;
-        padding: .4em;
-      }
 
       .content {
         flex-grow: 1;
@@ -79,6 +77,10 @@ requests {
           height: 50%;
           width: 100%;
           background-color: tomato;
+
+          .toolbar {
+            border-top: 1px solid #eaeaea;
+          }
         }
       }
     }

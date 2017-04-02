@@ -11,9 +11,10 @@ export function shortid(prefix = '', suffix = '') {
 /**
  * try parse text as JSON, YAML, XML
  * @param text
+ * @param shouldWarn
  * @returns parsed object or undefined
  */
-export function tryParseAsObject(text: string): Object {
+export function tryParseAsObject(text: string, shouldWarn = false): Object {
     let parsed = parseJson(text);
     if (!parsed) {
         parsed = parseYaml(text);
@@ -21,19 +22,21 @@ export function tryParseAsObject(text: string): Object {
     return parsed;
 }
 
-export function parseJson(text: string): Object {
+export function parseJson(text: string, shouldWarn = false): Object {
     try {
         return Hjson.parse(text);
     } catch (_) {
-        console.error('text is not JSON', text);
+        if (shouldWarn)
+            console.error('text is not JSON', text);
     }
 }
 
-export function parseYaml(text: string): Object {
+export function parseYaml(text: string, shouldWarn = false): Object {
     try {
         return Yaml.safeLoad(text);
     } catch (_) {
-        console.error('text is not YAML', text);
+        if (shouldWarn)
+            console.error('text is not YAML', text);
     }
 }
 
@@ -42,7 +45,7 @@ export function stringifyJson(object: Object, indent = 2): string {
 }
 
 export function stringifyYaml(object: Object, indent = 2, sortKeys = false): string {
-    return Yaml.safeDump({ indent, sortKeys });
+    return Yaml.safeDump(object, { indent, sortKeys });
 }
 
 export function formatJSON(text: string, indent = 2): string {
