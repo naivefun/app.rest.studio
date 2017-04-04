@@ -6,5 +6,7 @@ export enum TextMode {
     YAML = <any> 'yaml',
     MARKDOWN = <any> 'markdown',
     HJSON = <any> 'hjson',
-    JAVASCRIPT = <any> 'javascript'
+    JAVASCRIPT = <any> 'javascript',
+    CSS = <any> 'css',
+    NONE = <any> 'none' // not text content
 }

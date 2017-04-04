@@ -10,27 +10,6 @@ import { DefaultHttpClient } from '../../../@shared/http.service';
         .section {
             padding: 1em;
         }
-
-        .toolbar a.item {
-            font-size: .85em;
-            cursor: pointer;
-            border-radius: .25em;
-            background-color: #efefef;
-            color: slategray;
-            padding: .3em .5em;
-            margin: 0 .15em;
-            transition-duration: .2s;
-            transition-property: all;
-        }
-
-        .toolbar a.item:hover {
-            font-weight: bold;
-        }
-
-        .toolbar a.item.on {
-            background-color: #31a0c9;
-            color: #fff;
-        }
     `]
 })
 export class RequestBuilderComponent implements OnChanges {

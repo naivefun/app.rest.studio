@@ -118,7 +118,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
         ace.require('ace/ext/language_tools');
         let editor = this.editor = ace.edit(this.id), session = this.session = editor.getSession();
         editor.renderer.setShowGutter(this.lineNumbers);
-        editor.setTheme('ace/theme/clouds');
+        editor.setTheme('ace/theme/github');
         editor.setOptions({
             // enableSnippets: true,
             // enableLinking: true,
@@ -166,7 +166,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
         this.setMode(this.mode, true);
         this.textChanged$.subscribe(textObject => {
             // textObject = { mode: this.mode, text: this.getText() };
-            console.debug('emitting from change[textChanged$] event', this.getText(), textObject);
+            // console.debug('emitting from change[textChanged$] event', this.getText(), textObject);
             this.onTextChanged.emit({ mode: this.mode, text: this.getText() });
         });
     }

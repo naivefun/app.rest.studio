@@ -65,5 +65,11 @@ export function formatYaml(text: string, indent = 2, sortKeys = false): string {
 }
 
 export function highlightCode(text: string) {
-    return hljs.highlightAuto(text).value;
+    let result = hljs.highlightAuto(text);
+    console.debug('highlightCode result:', result);
+    return result.value;
+}
+
+export function isBinaryString(text: string) {
+    return /[\x00-\x08\x0E-\x1F]/.test(text);
 }

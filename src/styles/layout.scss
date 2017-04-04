@@ -6,7 +6,6 @@ html, body, app {
 app {
   width: 100%;
   height: 100%;
-  overflow: scroll;
   display: flex;
   flex-direction: column;
   background-color: $defaultBackgroundColor;

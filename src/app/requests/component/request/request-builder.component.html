@@ -1,7 +1,7 @@
-<div class="toolbar flex-center">
+<div class="toolbar font-small flex-center">
     <div class="flex-100">
-        <a *ngFor="let field of ['query', 'header', 'path', 'body']"
-           class="item"
+        <a *ngFor="let field of ['query', 'header', 'path', 'body', 'description']"
+           class="option"
            [ngClass]="{on: !off[field]}"
            (click)="toggoleField(field)">{{field | rsTitleCase}}</a>
     </div>
@@ -12,7 +12,7 @@
                 <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
-                <a class="link dropdown-item">Run 20 times concurrently</a>
+                <a class="link dropdown-item ion-android-share"> Share</a>
             </div>
         </div>
     </div>

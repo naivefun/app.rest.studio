@@ -35,5 +35,6 @@ export enum ResponseView {
     PREVIEW = <any> 'preview',
     BODY = <any> 'body',
     HEADER = <any> 'header',
-    SCHEMA = <any> 'schema'
+    SCHEMA = <any> 'schema',
+    ERROR = <any> 'error'
 }

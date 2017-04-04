@@ -12,8 +12,8 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
             display: block;
             text-align: center;
             padding: .5em;
-            background-color: #2c81a9;
-            color: #ddd;
+            background-color: #e8e8e8;
+            color: #bbb;
             font-weight: 400;
             transition-property: all;
             transition-duration: .3s;
