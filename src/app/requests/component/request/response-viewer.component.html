@@ -32,7 +32,7 @@
                   style="border: 1px solid #eaeaea;">{{response?.data | json}}</textarea>-->
         <!--<pre class="flex-1 margin-less" [innerHtml]="bodyHtml | rsCode" *ngIf="bodyHtml"></pre>-->
         <text-editor [text]="bodyString" [mode]="bodyTextMode"
-                     [fullScreen]="fullScreen" [observeText]="true"
+                     [observeText]="true"
                      [wrap]="true"
                      [lineNumbers]="true"
                      (onFullScreenChanged)="fullScreen = $event"></text-editor>
@@ -50,3 +50,7 @@
         <h1>Something goes wrong ... Have you installed the Chrome extension?</h1>
     </div>
 </div>
+
+<div class="link ion-close" style="position: absolute; right: 10px; top: 30px;
+            padding: 10px; font-size: 30px; z-index: 10000;" *ngIf="fullScreen"
+     (click)="fullScreen = false"></div>

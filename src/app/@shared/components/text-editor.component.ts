@@ -3,7 +3,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    EventEmitter, HostBinding,
+    EventEmitter,
     Input,
     OnChanges,
     Output,
@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import * as _ from 'lodash';
-import { delay, retry } from '../../@utils/misc.utils';
+import { retry } from '../../@utils/misc.utils';
 import { OnPushComponent } from './base.component';
 import { parseJson, shortid, tryParseAsObject } from '../../@utils/string.utils';
 import { TextMode } from '../../@model/editor';
@@ -25,16 +25,11 @@ declare const ace: any;
     template: `
         <div [id]="id" class="text-editor"
              (window:resize)="onWindowResize($event)"></div>
-        <div class="link ion-close" style="position: absolute; right: 10px; top: 10px; 
-            padding: 10px; font-size: 30px; z-index: 10000;" *ngIf="fullScreen"
-             (click)="exitFullScreen()"></div>
     `
 })
 export class TextEditorComponent extends OnPushComponent implements AfterViewInit, OnChanges {
     public id = shortid();
 
-    @HostBinding('class.full-screen')
-    @Input() public fullScreen: boolean; // add full-screen class to editor
     @Input() public mode: TextMode; // follow ace editor mode
     @Input() public objectMode: boolean; // indicate text should be json/yaml object string
     @Input() public disableAutoDetect: boolean; // do not detect text mode on the fly

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { DefaultHttpRequest, HttpRequestParam } from '../../../@model/http/http-request';
 import { DefaultHttpResponse, ResponseView } from '../../../@model/http/http-response';
 import * as _ from 'lodash';
@@ -24,7 +24,8 @@ export class ResponseViewerComponent implements OnChanges {
     public bodyTextMode: TextMode = TextMode.JAVASCRIPT;
     public availableViews = [ResponseView.PREVIEW];
     public view = ResponseView.PREVIEW;
-    public fullScreen = false;
+    @HostBinding('class.full-screen')
+    public fullScreen = true;
     private responseObject: Object;
     private digestObject: Object;
     private previewRequest: any;
