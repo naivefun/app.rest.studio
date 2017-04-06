@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DefaultHttpRequest } from '../@model/http/http-request';
-import { DefaultHttpResponse, TimeSpan } from '../@model/http/http-response';
+import {
+    DefaultHttpResponse, TimeSpan
+}
+    from '../@model/http/http-response';
 import { toAxiosOptions } from '../@utils/request.utils';
 import { AxiosError, AxiosResponse } from 'axios';
 import { parseResponse, parseResponseError } from '../@utils/response.utils';

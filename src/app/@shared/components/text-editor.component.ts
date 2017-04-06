@@ -1,8 +1,7 @@
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
+    ChangeDetectorRef, Component,
     EventEmitter,
     Input,
     OnChanges,
@@ -14,7 +13,11 @@ import { Observable, Subject } from 'rxjs';
 import * as _ from 'lodash';
 import { retry } from '../../@utils/misc.utils';
 import { OnPushComponent } from './base.component';
-import { parseJson, shortid, tryParseAsObject } from '../../@utils/string.utils';
+import {
+    parseJson, shortid, stringifyJson,
+    stringifyYaml, tryParseAsObject
+}
+    from '../../@utils/string.utils';
 import { TextMode } from '../../@model/editor';
 
 declare const ace: any;
@@ -119,8 +122,8 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
             // enableLinking: true,
             enableLiveAutocompletion: false,
             enableBasicAutocompletion: true,
-            maxLines: this.fullScreen ? null : this.maxLines,
-            minLines: this.fullScreen ? null : this.minLines,
+            maxLines: this.maxLines,
+            minLines: this.minLines,
             fontFamily: '"Roboto Mono", "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace'
         });
         editor.on('blur', () => {
@@ -130,7 +133,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
                 if (this.objectMode) {
                     let object = tryParseAsObject(text);
                     if (object) {
-                        let plainText = Strings.objectToText(object, isJSON);
+                        let plainText = stringifyJson(object);
                         this.setMode(isJSON ? TextMode.JAVASCRIPT : TextMode.YAML);
                         this.setText(plainText);
                     }
@@ -196,10 +199,10 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
 
     public toYAML() {
         if (this.objectMode) {
-            let text = this.getText(), isJSON = Strings.isJSON(text);
-            let object = Strings.parseObject(text, isJSON);
+            let text = this.getText();
+            let object = tryParseAsObject(text);
             if (object) {
-                this.setText(Strings.objectToText(object, false));
+                this.setText(stringifyYaml(object));
             }
         }
     }
@@ -209,7 +212,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
             let text = this.getText();
             let object = tryParseAsObject(text);
             if (object) {
-                this.setText(Strings.objectToText(object, true));
+                this.setText(stringifyJson(object));
             }
         }
     }

@@ -1,10 +1,23 @@
-import { Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { DefaultHttpRequest, HttpRequestParam } from '../../../@model/http/http-request';
-import { DefaultHttpResponse, ResponseView } from '../../../@model/http/http-response';
+import {
+    Component, EventEmitter, HostBinding, Input,
+    OnChanges, Output, SimpleChanges
+}
+    from '@angular/core';
+import {
+    DefaultHttpRequest, HttpRequestParam
+}
+    from '../../../@model/http/http-request';
+import {
+    DefaultHttpResponse, ResponseView
+}
+    from '../../../@model/http/http-response';
 import * as _ from 'lodash';
 import { toAxiosOptions } from '../../../@utils/request.utils';
 import { generateSchema } from '../../../@utils/schema.utils';
-import { isBinaryString, stringifyJson, stringifyYaml, tryParseAsObject } from '../../../@utils/string.utils';
+import {
+    isBinaryString, stringifyJson, stringifyYaml, tryParseAsObject
+}
+    from '../../../@utils/string.utils';
 import { TextMode } from '../../../@model/editor';
 
 @Component({
