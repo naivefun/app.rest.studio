@@ -38,7 +38,7 @@ export class ResponseViewerComponent implements OnChanges {
     public availableViews = [ResponseView.PREVIEW];
     public view = ResponseView.PREVIEW;
     @HostBinding('class.full-screen')
-    public fullScreen = true;
+    public fullScreen = false;
     private responseObject: Object;
     private digestObject: Object;
     private previewRequest: any;
@@ -58,30 +58,31 @@ export class ResponseViewerComponent implements OnChanges {
             this.bodyTextMode = this.guessMode(this.response.headers);
             this.previewable = _.includes([TextMode.HTML], this.bodyTextMode); // TODO: support image and file download
             let data = this.response.data;
-            try {
-                if (_.isObject(data)) {
-                    this.responseObject = data;
-                    this.bodyString = stringifyJson(data);
-                } else if (_.isString(data)) {
-                    if (_.includes([TextMode.JSON, TextMode.YAML], this.bodyTextMode)) {
-                        this.responseObject = tryParseAsObject(data);
+            if (data)
+                try {
+                    if (_.isObject(data)) {
+                        this.responseObject = data;
+                        this.bodyString = stringifyJson(data);
+                    } else if (_.isString(data)) {
+                        if (_.includes([TextMode.JSON, TextMode.YAML], this.bodyTextMode)) {
+                            this.responseObject = tryParseAsObject(data);
+                        }
+
+                        this.bodyString = data;
+                        console.debug('mode', this.response.headers, this.bodyTextMode);
+                        console.debug('isBinary string', /[\x00-\x08\x0E-\x1F]/.test(data));
+                    } else {
+                        delete this.responseObject;
+                        delete this.bodyString;
                     }
 
-                    this.bodyString = data;
-                    console.debug('mode', this.response.headers, this.bodyTextMode);
-                    console.debug('isBinary string', /[\x00-\x08\x0E-\x1F]/.test(data));
-                } else {
-                    delete this.responseObject;
-                    delete this.bodyString;
+                    if (this.responseObject) {
+                        this.schema = this.getSchema();
+                        this.availableViews.push(ResponseView.SCHEMA);
+                    }
+                } catch (_) {
+                    console.debug('response data is not object', data);
                 }
-
-                if (this.responseObject) {
-                    this.schema = this.getSchema();
-                    this.availableViews.push(ResponseView.SCHEMA);
-                }
-            } catch (_) {
-                console.debug('response data is not object', data);
-            }
         } else {
             this.reset();
         }

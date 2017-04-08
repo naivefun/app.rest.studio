@@ -9,7 +9,8 @@ export class ConfigService {
         switch (ENV) {
             case 'production':
             default:
-                this.chromeExtensionId = 'cngieijppkdcnhanpjmephenodeapjgc';
+                this.chromeExtensionId = 'cngieijppkdcnhanpjmephenodeapjgc'; // local
+                this.chromeExtensionId = 'imegccjfohmaiflckepgcpeagepgcael'; // production
         }
     }
 }

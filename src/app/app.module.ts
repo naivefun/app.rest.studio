@@ -38,6 +38,7 @@ import { DefaultHttpClient } from './@shared/http.service';
 import { ConfigService } from './@shared/config.service';
 import { YamlPipe } from './@shared/pipes/yaml.pipe';
 import { TextEditorComponent } from './@shared/components/text-editor.component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -86,7 +87,8 @@ type StoreType = {
         // store
         StoreModule.provideStore(reducer),
         EffectsModule.run(RequestsEffects),
-        RouterStoreModule.connectRouter()
+        RouterStoreModule.connectRouter(),
+        StoreDevtoolsModule.instrumentOnlyWithExtension()
     ],
     providers: [ // expose our Services and Providers into Angular's dependency injection
         ENV_PROVIDERS,

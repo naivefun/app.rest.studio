@@ -25,14 +25,26 @@ export class DefaultHttpClient implements HttpClient {
         let options = toAxiosOptions(request);
         // TODO: merge environment
         console.debug('axios options', options);
+        let start = Date.now();
         return new Promise(resolve => {
             axios.request(options)
                 .then(resp => {
                     let response = parseResponse(resp);
+                    response.cookies = [];
+                    response.timeSpan = {
+                        start,
+                        end: Date.now()
+                    };
+                    console.debug('direct request from app', response);
                     resolve(response);
                 })
                 .catch(err => {
                     let response = parseResponseError(err);
+                    response.cookies = [];
+                    response.timeSpan = {
+                        start,
+                        end: Date.now()
+                    };
                     resolve(response);
                 });
         });

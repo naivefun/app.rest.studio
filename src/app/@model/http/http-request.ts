@@ -4,7 +4,8 @@ import { DefaultPair } from '../pair';
 export class DefaultHttpRequest implements HttpRequest {
 
     public static defaultRequest() {
-        return new DefaultHttpRequest('http://www.mocky.io/v2/58e03f0e1000008914cc1603');
+        // return new DefaultHttpRequest('http://www.mocky.io/v2/58e03f0e1000008914cc1603');
+        return new DefaultHttpRequest('http://localhost:3000/');
     }
 
     public id: string;

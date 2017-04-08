@@ -21,7 +21,7 @@ export class RequestBuilderComponent implements OnChanges {
     public methods = HTTP_METHODS;
     public off: any = {};
 
-    private _request: DefaultHttpRequest; // internal request
+    public _request: DefaultHttpRequest; // internal request
     @ViewChild('urlInput')
     private urlInput: ElementRef;
 
