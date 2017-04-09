@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { State } from '../../../store/reducer';
 import { Store } from '@ngrx/store';
 import {
-    ClearResponseAction, ResponseReceivedAction, SelectRequestAction,
+    ClearResponseAction, ResponseReceivedAction, SaveRequestAction, SelectRequestAction,
     UpdateRequestAction
 } from '../../store/action';
 import { Observable } from 'rxjs';
@@ -55,6 +55,7 @@ export class RequestsRequestComponent implements OnInit {
     }
 
     public onSendRequest(request: DefaultHttpRequest) {
+        this.store.dispatch(new SaveRequestAction(request));
         this.httpClient.execute(request)
             .then(resp => {
                 console.debug(resp);

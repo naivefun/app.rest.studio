@@ -10,7 +10,7 @@ export class ConfigService {
             case 'production':
             default:
                 this.chromeExtensionId = 'cngieijppkdcnhanpjmephenodeapjgc'; // local
-                this.chromeExtensionId = 'imegccjfohmaiflckepgcpeagepgcael'; // production
+                // this.chromeExtensionId = 'imegccjfohmaiflckepgcpeagepgcael'; // production
         }
     }
 }

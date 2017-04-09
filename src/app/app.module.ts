@@ -39,6 +39,7 @@ import { ConfigService } from './@shared/config.service';
 import { YamlPipe } from './@shared/pipes/yaml.pipe';
 import { TextEditorComponent } from './@shared/components/text-editor.component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { DbService } from './@shared/db.service';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -46,7 +47,8 @@ const APP_PROVIDERS = [
     AppState,
     ConfigService,
     ChromeService,
-    DefaultHttpClient
+    DefaultHttpClient,
+    DbService
 ];
 
 type StoreType = {

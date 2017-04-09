@@ -52,7 +52,9 @@ export class ResponseViewerComponent implements OnChanges {
         }
         let response = changes['response'];
         if (response && response.currentValue) {
-            this.duration = this.response.timeSpan.end - this.response.timeSpan.start;
+            if (this.response.timeSpan) {
+                this.duration = this.response.timeSpan.end - this.response.timeSpan.start;
+            }
             this.view = this.response.view || ResponseView.BODY;
             this.availableViews = [ResponseView.PREVIEW, ResponseView.BODY, ResponseView.HEADER];
             this.bodyTextMode = this.guessMode(this.response.headers);

@@ -29,6 +29,8 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
             padding: .4em .5em;
             word-wrap: break-word;
             line-height: 130%;
+            border-top: 1px solid transparent;
+            border-bottom: 1px solid transparent;
             transition-property: all;
             transition-duration: .2s;
         }
