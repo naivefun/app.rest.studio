@@ -1,14 +1,80 @@
-html, body, app {
+html, body, app,
+button, input, optgroup, select, textarea {
   font-family: $font;
   color: $defaultColor;
+  font-size: 14px;
 }
 
 code, pre, .code {
   font-family: $codeFont;
 }
 
+code, pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
+}
+
+a:not([href]):not([tabindex]),
+a {
+  color: #0074D9;
+}
+
+a:not([href]):not([tabindex]).on,
+a.on {
+  //color: #444;
+  //font-weight: bold;
+}
+
+.full-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.option {
+  color: #777 !important;
+  cursor: pointer;
+  border-radius: .3em;
+  padding: .15em .4em .2em .4em !important;
+  margin: auto .1em !important;
+  transition-duration: .2s;
+  transition-property: all;
+}
+
+.option:hover {
+  color: #2c93e1 !important;
+  background-color: rgba(45, 171, 252, 0.16) !important;
+  border-radius: .3em;
+}
+
+.option.on {
+  color: #fff !important;
+  background-color: #2c93e1 !important;
+  //font-weight: bold;
+  border: 1px solid rgba(45, 171, 252, 0.15);
+}
+
+.padding-less {
+  padding: 0 !important;
+}
+
+.margin-less {
+  margin: 0 !important;
+}
+
+.full-screen {
+  flex-grow: 1000;
+}
+
+.font-small {
+  font-size: .85em;
 }
 
 .b {
@@ -17,4 +83,45 @@ h1, h2, h3, h4, h5, h6 {
 
 .i {
   font-style: italic;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.light-text {
+  color: #aaa !important;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex-grow: 1;
+}
+
+.flex-100 {
+  flex-grow: 100;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+// bootstrap
+.form-control {
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #eee;
+  padding: .25em 0;
+}
+
+.form-control:focus {
+  border-color: #4fa5c3;
+}
+
+.form-control::-webkit-input-placeholder {
+  color: #ccc;
 }

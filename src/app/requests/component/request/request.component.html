@@ -1,7 +1,6 @@
-<div class="request-builder">
-    <request-builder [id]="id" [request]="request$ | async"></request-builder>
-</div>
-<div class="response-viewer">
-    <response-viewer [id]="id" [request]="request$ | async"
-                     [response]="response$ | async"></response-viewer>
-</div>
+<request-builder [id]="id" [request]="request$ | async"
+                 (onSendRequest)="onSendRequest($event)"
+                 (onRequestUpdated)="onRequestUpdated($event)"></request-builder>
+<response-viewer [id]="id" [request]="request$ | async"
+                 [response]="response$ | async"
+                 (onClearResponse)="onClearResponse($event)"></response-viewer>

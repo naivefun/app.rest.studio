@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { ApplicationRef, NgModule } from '@angular/core';
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
@@ -30,11 +30,25 @@ import { RouterStoreModule } from '@ngrx/router-store';
 import { RequestsRequestComponent } from './requests/component/request/request.component';
 import { RequestBuilderComponent } from './requests/component/request/request-builder.component';
 import { ResponseViewerComponent } from './requests/component/request/response-viewer.component';
+import { ParamGroupComponent } from './requests/component/request/param-group/param-group.component';
+import { TitleCasePipe } from './@shared/pipes/title-case.pipe';
+import { CodePipe } from './@shared/pipes/code.pipe';
+import { ChromeService } from './@shared/chrome.service';
+import { DefaultHttpClient } from './@shared/http.service';
+import { ConfigService } from './@shared/config.service';
+import { YamlPipe } from './@shared/pipes/yaml.pipe';
+import { TextEditorComponent } from './@shared/components/text-editor.component';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { DbService } from './@shared/db.service';
 
 // Application wide providers
 const APP_PROVIDERS = [
     ...APP_RESOLVER_PROVIDERS,
-    AppState
+    AppState,
+    ConfigService,
+    ChromeService,
+    DefaultHttpClient,
+    DbService
 ];
 
 type StoreType = {
@@ -55,17 +69,28 @@ type StoreType = {
         RequestsRequestComponent,
         RequestsSidebarComponent,
         RequestBuilderComponent,
-        ResponseViewerComponent
+        ResponseViewerComponent,
+        ParamGroupComponent,
+
+        // shared,
+        TextEditorComponent,
+
+        // pipes
+        TitleCasePipe,
+        CodePipe,
+        YamlPipe
     ],
     imports: [ // import Angular's modules
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         HttpModule,
         RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
         // store
         StoreModule.provideStore(reducer),
         EffectsModule.run(RequestsEffects),
-        RouterStoreModule.connectRouter()
+        RouterStoreModule.connectRouter(),
+        StoreDevtoolsModule.instrumentOnlyWithExtension()
     ],
     providers: [ // expose our Services and Providers into Angular's dependency injection
         ENV_PROVIDERS,

@@ -6,13 +6,13 @@ html, body, app {
 app {
   width: 100%;
   height: 100%;
-  overflow: scroll;
   display: flex;
   flex-direction: column;
   background-color: $defaultBackgroundColor;
 
   nav {
     height: 40px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     background-color: #eeeeee;
@@ -23,5 +23,15 @@ app {
     flex-grow: 1;
     display: flex;
     background-color: tomato;
+  }
+
+  text-editor {
+    flex-grow: 1;
+    display: flex;
+  }
+
+  .text-editor {
+    width: 100%;
+    height: 100%;
   }
 }

@@ -25,6 +25,7 @@
     // "directive-selector": [true, "attribute", "my", "camelCase"],
     "import-destructuring-spacing": true,
     "invoke-injectable": true,
+    "one-variable-per-declaration": false,
     "no-access-missing-member": true,
     "no-attribute-parameter-decorator": true,
     "no-forward-ref": true,
@@ -33,7 +34,7 @@
     "pipe-naming": [
       true,
       "camelCase",
-      "my"
+      "rs"
     ],
     "templates-use-public": true,
     "use-host-property-decorator": true,
@@ -42,6 +43,7 @@
     "use-output-property-decorator": true,
     "use-pipe-transform-interface": true,
     // General
+    "curly": false,
     "max-classes-per-file": false,
     "new-parens": false,
     "arrow-parens": false,
@@ -53,7 +55,7 @@
     ],
     "max-line-length": [
       true,
-      100
+      140
     ],
     "no-string-literal": false,
     "no-use-before-declare": true,

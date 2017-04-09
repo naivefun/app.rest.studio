@@ -18,7 +18,8 @@
     <base href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atom-one-light.min.css">
 </head>
 
 <body>
@@ -48,6 +49,7 @@
 <% if (htmlWebpackPlugin.options.metadata.isDevServer && htmlWebpackPlugin.options.metadata.HMR !== true) { %>
 <!-- Webpack Dev Server reload -->
 <script src="/webpack-dev-server.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pouchdb/6.1.2/pouchdb.min.js"></script>
 <% } %>
 
 
@@ -60,5 +62,17 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
         integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/languages/json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-html.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-xml.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-json.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-hjson.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-css.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-markdown.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/mode-javascript.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/theme-github.js"></script>
 </body>
 </html>

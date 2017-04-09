@@ -1,4 +1,52 @@
-<h1>JSON Viewer {{id}}</h1>
-<div>
-    {{response}}
+<div class="toolbar font-small">
+    <div class="flex-100">
+        <a *ngFor="let v of availableViews"
+           class="link option" [ngClass]="{on: view === v}"
+           (click)="switchView(v)">{{v | rsTitleCase}}</a>
+    </div>
+    <div class="flex-1 code" *ngIf="response">
+        <span *ngIf="duration">{{duration}}ms</span>
+        <span>{{response.status}}</span>
+        <span>{{response.statusText}}</span>
+    </div>
+    <div>
+        <a class="ion-eye link p-2" title="preview" *ngIf="previewable"> </a>
+        <a class="ion-arrow-expand link p-2" title="full screen" (click)="fullScreen = !fullScreen"> </a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle link ion-grid" data-toggle="dropdown">
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item link" (click)="digest()">View Digest</a>
+                <a class="dropdown-item link" (click)="viewAsJson()">View As JSON</a>
+                <a class="dropdown-item link" (click)="viewAsYaml()">View As YAML</a>
+                <a class="dropdown-item link" (click)="viewAsHtml()">View As HTML</a>
+                <a class="dropdown-item link" (click)="viewAsXml()">View As XML</a>
+                <a class="dropdown-item link" (click)="clearResponse()">Clear</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content" [ngSwitch]="view">
+    <div class="flex flex-1" [hidden]="view !== 'body'">
+        <!--<textarea class="code form-control flex-1 p-1"
+                  style="border: 1px solid #eaeaea;">{{response?.data | json}}</textarea>-->
+        <!--<pre class="flex-1 margin-less" [innerHtml]="bodyHtml | rsCode" *ngIf="bodyHtml"></pre>-->
+        <text-editor [text]="bodyString" [mode]="bodyTextMode"
+                     [observeText]="true"
+                     [wrap]="true"
+                     [lineNumbers]="true"
+                     (onFullScreenChanged)="fullScreen = $event"></text-editor>
+    </div>
+    <div class="flex flex-1 p-2" *ngSwitchCase="'header'">
+        <pre class="flex-1" [innerHtml]="response?.headers | rsYaml | rsCode"></pre>
+    </div>
+    <div class="flex flex-1 p-2" *ngSwitchCase="'preview'">
+        <pre class="flex-1" [innerHtml]="(previewRequest || {}) | rsYaml | rsCode"></pre>
+    </div>
+    <div class="flex flex-1 p-2" *ngSwitchCase="'schema'">
+        <pre class="flex-1" [innerHtml]="(schema || {}) | rsYaml | rsCode"></pre>
+    </div>
+    <div class="flex flex-1 p-2" *ngSwitchCase="'error'">
+        <h1>Something goes wrong ... Have you installed the Chrome extension?</h1>
+    </div>
 </div>

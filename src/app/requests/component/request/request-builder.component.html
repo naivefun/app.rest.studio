@@ -1,4 +1,62 @@
-<h1>Request Form {{id}}</h1>
-<div *ngIf="request">
-    <h2>{{request.method}}: {{request.url}}</h2>
+<div class="toolbar font-small flex-center">
+    <div class="flex-100">
+        <a *ngFor="let field of ['query', 'header', 'path', 'body', 'description']"
+           class="option"
+           [ngClass]="{on: !off[field]}"
+           (click)="toggoleField(field)">{{field | rsTitleCase}}</a>
+    </div>
+    <div class="flex-1">
+        <div class="btn-group">
+            <button class="btn btn-sm btn-success ion-play link" (click)="run()"> Run</button>
+            <button type="button" class="btn btn-sm btn-success link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="link dropdown-item ion-android-share"> Share</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content" *ngIf="_request">
+    <div class="section">
+        <div class="b">Basic</div>
+        <div style="display: flex; align-items: center;">
+            <div class="btn-group">
+                <a class="link dropdown-toggle" data-toggle="dropdown">
+                    {{_request.method}}
+                </a>
+                <div class="dropdown-menu">
+                    <a *ngFor="let method of methods"
+                       class="link dropdown-item"
+                       (click)="setMethod(method)">{{method}}</a>
+                </div>
+            </div>
+            <div style="flex-grow: 100; margin-left: .5em;">
+                <input #urlInput type="text" class="form-control" [(ngModel)]="_request.url"
+                       (change)="emitChanges()"/>
+            </div>
+        </div>
+    </div>
+    <div class="section" *ngIf="!off.query">
+        <div><b>Query Parameters</b></div>
+        <request-param-group [paramGroup]="_request.queryParams"
+                             (paramsUpdated)="emitChanges()">
+        </request-param-group>
+    </div>
+    <div class="section" *ngIf="!off.header">
+        <div><b>Header Parameters</b></div>
+        <request-param-group [paramGroup]="_request.headerParams"
+                             (paramsUpdated)="emitChanges()">
+        </request-param-group>
+    </div>
+    <div class="section" *ngIf="!off.body">
+        <div><b>Form Parameters</b></div>
+        <request-param-group [paramGroup]="_request.formParams"
+                             (paramsUpdated)="emitChanges()">
+        </request-param-group>
+    </div>
+    <div class="section" *ngIf="!off.description">
+        <div><b>Description</b></div>
+        <textarea class="form-control" rows="5" [(ngModel)]="_request.description"></textarea>
+    </div>
 </div>

@@ -15,6 +15,5 @@ export class DefaultPair implements Pair {
         this.id = shortid();
         this.key = key;
         this.value = value;
-        this.off = false;
     }
 }
