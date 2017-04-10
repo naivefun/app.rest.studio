@@ -5,13 +5,15 @@ import { LoadRequestsSuccessAction, RequestsActions, RequestsActionTypes } from 
 import { Action } from '@ngrx/store';
 import { go } from '@ngrx/router-store';
 import { DB, DbService } from '../../@shared/db.service';
+import { DefaultHttpRequest } from '../../@model/http/http-request';
+import * as _ from 'lodash';
 
 @Injectable()
 export class RequestsEffects {
     @Effect()
     public loadRequests$: Observable<Action> = this.action$
         .ofType(RequestsActionTypes.LOAD_REQUESTS)
-        .switchMap(_ => {
+        .switchMap(__ => {
             return this.db.all(DB.REQUESTS)
                 .switchMap(requests => {
                     console.log('loaded requests:', requests);
@@ -55,6 +57,19 @@ export class RequestsEffects {
                 .switchMap(result => {
                     console.debug('delete request result:', result);
                     return Observable.empty();
+                });
+        });
+
+    @Effect()
+    public upRequest$: Observable<Action> = this.action$
+        .ofType(RequestsActionTypes.UP_REQUEST)
+        .map(toPayload)
+        .switchMap(id => {
+            return this.db.get(id, DB.REQUESTS)
+                .switchMap((request: DefaultHttpRequest) => {
+                    request.createdAt = Date.now();
+                    return this.db.save(request, DB.REQUESTS)
+                        .switchMap(result => Observable.empty());
                 });
         });
 

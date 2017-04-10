@@ -20,6 +20,9 @@
 <div class="content" *ngIf="_request">
     <div class="section">
         <div class="b">Basic</div>
+        <div>
+            <input class="form-control" [(ngModel)]="_request.title" (change)="emitChanges()" />
+        </div>
         <div style="display: flex; align-items: center;">
             <div class="btn-group">
                 <a class="link dropdown-toggle" data-toggle="dropdown">

@@ -1,6 +1,6 @@
 import {
     Component, EventEmitter, HostBinding, Input,
-    OnChanges, Output, SimpleChanges
+    OnChanges, Output, SimpleChanges, ViewChild
 }
     from '@angular/core';
 import {
@@ -19,6 +19,7 @@ import {
 }
     from '../../../@utils/string.utils';
 import { TextMode } from '../../../@model/editor';
+import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
 
 @Component({
     selector: 'response-viewer',
@@ -30,6 +31,9 @@ export class ResponseViewerComponent implements OnChanges {
     @Input() public response: DefaultHttpResponse;
 
     @Output() public onClearResponse = new EventEmitter<string>();
+
+    @ViewChild('editor')
+    public editor: TextEditorComponent;
 
     public bodyString: string;
     public duration: number;
@@ -96,6 +100,13 @@ export class ResponseViewerComponent implements OnChanges {
         }
 
         this.view = view;
+    }
+
+    public toggleFullScreen() {
+        this.fullScreen = !this.fullScreen;
+        setTimeout(() => {
+            this.editor.onWindowResize();
+        }, 50);
     }
 
     /**

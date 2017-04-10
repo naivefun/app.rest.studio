@@ -11,7 +11,7 @@
     </div>
     <div>
         <a class="ion-eye link p-2" title="preview" *ngIf="previewable"> </a>
-        <a class="ion-arrow-expand link p-2" title="full screen" (click)="fullScreen = !fullScreen"> </a>
+        <a class="ion-arrow-expand link p-2" title="full screen" (click)="toggleFullScreen()"> </a>
         <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle link ion-grid" data-toggle="dropdown">
             </button>
@@ -27,11 +27,8 @@
     </div>
 </div>
 <div class="content" [ngSwitch]="view">
-    <div class="flex flex-1" [hidden]="view !== 'body'">
-        <!--<textarea class="code form-control flex-1 p-1"
-                  style="border: 1px solid #eaeaea;">{{response?.data | json}}</textarea>-->
-        <!--<pre class="flex-1 margin-less" [innerHtml]="bodyHtml | rsCode" *ngIf="bodyHtml"></pre>-->
-        <text-editor [text]="bodyString" [mode]="bodyTextMode"
+    <div class="flex flex-1" [hidden]="view + '' !== 'body'">
+        <text-editor #editor [text]="bodyString" [mode]="bodyTextMode"
                      [observeText]="true"
                      [wrap]="true"
                      [lineNumbers]="true"

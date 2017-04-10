@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { DefaultHttpRequest } from '../../../@model/http/http-request';
 import { State } from '../../../store/reducer';
 import { Store } from '@ngrx/store';
-import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '../../store/action';
+import { CreateRequestAction, DeleteRequestAction, SelectRequestAction, UpRequestAction } from '../../store/action';
 
 @Component({
     selector: 'requests-sidebar',
@@ -20,7 +20,7 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
         }
 
         a.btn-create-request:hover {
-            background-color: #31a0c9;
+            background-color: #2c93e1;
             color: #fff;
         }
 
@@ -31,12 +31,13 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
             line-height: 130%;
             border-top: 1px solid transparent;
             border-bottom: 1px solid transparent;
-            transition-property: all;
-            transition-duration: .2s;
+            /*transition-property: all;*/
+            /*transition-duration: .2s;*/
         }
 
         li a {
             display: table-cell;
+            color: #999;
         }
 
         li span {
@@ -45,7 +46,7 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: 20px;
-            font-size: 12px;
+            font-size: 14px;
         }
 
         li:hover {
@@ -53,14 +54,14 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
         }
 
         li.active {
-            background-color: #e8e8e8;
-            color: #666;
+            background-color: #fff;
+            color: #2c93e1;
             border-top: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
         }
 
         li.active a {
-            color: darkslateblue;
+            color: #2c93e1;
         }
     `]
 })
@@ -82,5 +83,9 @@ export class RequestsSidebarComponent {
 
     public deleteRequest(id: string) {
         this.store.dispatch(new DeleteRequestAction(id));
+    }
+
+    public upRequest(id: string) {
+        this.store.dispatch(new UpRequestAction(id));
     }
 }

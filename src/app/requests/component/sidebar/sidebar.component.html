@@ -3,9 +3,11 @@
 <ul class="list-unstyled">
     <li *ngFor="let request of requests"
         class="link"
-        [routerLink]="['/requests', request.id]"
         [ngClass]="{active: request.id === activeRequestId}">
         <a class="ion-close p-1" (click)="deleteRequest(request.id)"> </a>
-        <span>{{request.url || request.id}}</span>
+        <a class="ion-android-arrow-dropup-circle p-1" (click)="upRequest(request.id)"> </a>
+        <a [routerLink]="['/requests', request.id]">
+            {{request.title || request.url || request.id}}
+        </a>
     </li>
 </ul>

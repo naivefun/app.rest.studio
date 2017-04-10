@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 export const getRequests = (state: RequestsState) => {
     console.debug('getRequests', state);
-    let result = _.sortBy(state.requests, 'createdAt', 'desc');
+    let result = _.orderBy(state.requests, 'createdAt', 'desc');
     return result;
 };
 

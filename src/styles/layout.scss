@@ -15,8 +15,13 @@ app {
     min-height: 40px;
     display: flex;
     align-items: center;
-    background-color: #eeeeee;
+    background-color: #2c93e1;
     border-bottom: 1px solid #dddddd;
+    padding: 0 1em;
+
+    a:not([href]):not([tabindex]), a {
+      color: #fff;
+    }
   }
 
   requests {

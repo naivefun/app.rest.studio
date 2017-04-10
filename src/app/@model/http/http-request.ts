@@ -27,11 +27,14 @@ export class DefaultHttpRequest implements HttpRequest {
 
     public disabledFields: ParamField[] = [];
 
+    public createdAt: number;
+
     constructor(url: string, method = HttpMethod.GET, title?: string) {
         this.id = shortid();
         this.title = title;
         this.url = url;
         this.method = method;
+        this.createdAt = Date.now();
     }
 }
 
