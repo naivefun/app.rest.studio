@@ -1,5 +1,7 @@
-<a class="link btn-create-request ion-plus" (click)="createRequest()"> Create Request</a>
-
+<div class="flex">
+    <a class="flex-1 link btn-create-request ion-ios-copy-outline" (click)="createRequest()"> Import</a>
+    <a class="flex-1 link btn-create-request ion-plus" (click)="createRequest()"> Create</a>
+</div>
 <ul class="list-unstyled">
     <li *ngFor="let request of requests"
         class="link"

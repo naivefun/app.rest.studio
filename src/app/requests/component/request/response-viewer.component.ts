@@ -39,8 +39,8 @@ export class ResponseViewerComponent implements OnChanges {
     public duration: number;
     public previewable: boolean; // TODO: html, image, downloadable
     public bodyTextMode: TextMode = TextMode.JAVASCRIPT;
-    public availableViews = [ResponseView.PREVIEW];
-    public view = ResponseView.PREVIEW;
+    public availableViews = [ResponseView.REQUEST];
+    public view = ResponseView.REQUEST;
     @HostBinding('class.full-screen')
     public fullScreen = false;
     private responseObject: Object;
@@ -60,7 +60,7 @@ export class ResponseViewerComponent implements OnChanges {
                 this.duration = this.response.timeSpan.end - this.response.timeSpan.start;
             }
             this.view = this.response.view || ResponseView.BODY;
-            this.availableViews = [ResponseView.PREVIEW, ResponseView.BODY, ResponseView.HEADER];
+            this.availableViews = [ResponseView.REQUEST, ResponseView.BODY, ResponseView.HEADER];
             this.bodyTextMode = this.guessMode(this.response.headers);
             this.previewable = _.includes([TextMode.HTML], this.bodyTextMode); // TODO: support image and file download
             let data = this.response.data;
@@ -209,8 +209,8 @@ export class ResponseViewerComponent implements OnChanges {
     private reset() {
         delete this.bodyString;
         delete this.duration;
-        this.availableViews = [ResponseView.PREVIEW];
-        this.view = ResponseView.PREVIEW;
+        this.availableViews = [ResponseView.REQUEST];
+        this.view = ResponseView.REQUEST;
     }
 
     private guessMode(headers: Object): TextMode {

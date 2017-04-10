@@ -37,8 +37,14 @@
     <div class="flex flex-1 p-2" *ngSwitchCase="'header'">
         <pre class="flex-1" [innerHtml]="response?.headers | rsYaml | rsCode"></pre>
     </div>
-    <div class="flex flex-1 p-2" *ngSwitchCase="'preview'">
-        <pre class="flex-1" [innerHtml]="(previewRequest || {}) | rsYaml | rsCode"></pre>
+    <div class="flex-1 p-2" *ngSwitchCase="'request'">
+        <div class="p-1">
+            <a class="option on">Preview Request</a>
+            <a class="option">Share Request</a>
+        </div>
+        <hr/>
+
+        <pre [innerHtml]="(previewRequest || {}) | rsYaml | rsCode"></pre>
     </div>
     <div class="flex flex-1 p-2" *ngSwitchCase="'schema'">
         <pre class="flex-1" [innerHtml]="(schema || {}) | rsYaml | rsCode"></pre>

@@ -32,7 +32,7 @@ export interface TimeSpan {
 }
 
 export enum ResponseView {
-    PREVIEW = <any> 'preview',
+    REQUEST = <any> 'request',
     BODY = <any> 'body',
     HEADER = <any> 'header',
     SCHEMA = <any> 'schema',
