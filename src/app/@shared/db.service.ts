@@ -8,6 +8,10 @@ export const DB = {
     REQUESTS: 'requests'
 };
 
+export const KEYS = {
+    LOCAL_CONFIG: 'local-config'
+};
+
 @Injectable()
 export class DbService {
     private _db = {};

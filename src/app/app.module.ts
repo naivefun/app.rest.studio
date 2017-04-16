@@ -40,6 +40,8 @@ import { YamlPipe } from './@shared/pipes/yaml.pipe';
 import { TextEditorComponent } from './@shared/components/text-editor.component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { DbService } from './@shared/db.service';
+import { JsonPipe } from './@shared/pipes/json.pipe';
+import { SortKeysPipe } from './@shared/pipes/sort-keys.pipe';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -78,7 +80,9 @@ type StoreType = {
         // pipes
         TitleCasePipe,
         CodePipe,
-        YamlPipe
+        YamlPipe,
+        JsonPipe,
+        SortKeysPipe
     ],
     imports: [ // import Angular's modules
         BrowserModule,

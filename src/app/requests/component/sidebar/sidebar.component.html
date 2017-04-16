@@ -4,12 +4,13 @@
 </div>
 <ul class="list-unstyled">
     <li *ngFor="let request of requests"
-        class="link"
+        class="link d-flex"
+        [routerLink]="['/requests', request.id]"
         [ngClass]="{active: request.id === activeRequestId}">
-        <a class="ion-close p-1" (click)="deleteRequest(request.id)"> </a>
-        <a class="ion-android-arrow-dropup-circle p-1" (click)="upRequest(request.id)"> </a>
-        <a [routerLink]="['/requests', request.id]">
-            {{request.title || request.url || request.id}}
-        </a>
+        <span class="title">{{request.title || request.url || request.id}}</span>
+        <div class="menu">
+            <a class="ion-close" (click)="deleteRequest(request.id, $event)"> </a>
+            <a class="ion-android-arrow-dropup-circle" (click)="upRequest(request.id, $event)"> </a>
+        </div>
     </li>
 </ul>

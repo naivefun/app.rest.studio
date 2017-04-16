@@ -17,6 +17,7 @@ export class DefaultHttpRequest implements HttpRequest {
     public timeout: number;
     public maxContentLength: number;
     public withCredentials: boolean;
+    public mode: BodyMode;
 
     public queryParams: HttpRequestParam[] = [];
     public headerParams: HttpRequestParam[] = [];
@@ -24,6 +25,7 @@ export class DefaultHttpRequest implements HttpRequest {
     public pathParams: HttpRequestParam[] = [];
     public file: DefaultFileReference; // if binary
     public files: DefaultFileReference[]; // if form uploads
+    public body: string;
 
     public disabledFields: ParamField[] = [];
 

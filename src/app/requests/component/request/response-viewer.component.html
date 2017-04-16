@@ -11,10 +11,10 @@
     </div>
     <div>
         <a class="ion-eye link p-2" title="preview" *ngIf="previewable"> </a>
-        <a class="ion-arrow-expand link p-2" title="full screen" (click)="toggleFullScreen()"> </a>
         <div class="btn-group">
-            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle link ion-grid" data-toggle="dropdown">
-            </button>
+            <a class="ion-arrow-expand large link p-2" title="full screen" (click)="toggleFullScreen()"> </a>
+            <a class="link ion-grid large p-2" data-toggle="dropdown">
+            </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item link" (click)="digest()">View Digest</a>
                 <a class="dropdown-item link" (click)="viewAsJson()">View As JSON</a>
@@ -35,19 +35,42 @@
                      (onFullScreenChanged)="fullScreen = $event"></text-editor>
     </div>
     <div class="flex flex-1 p-2" *ngSwitchCase="'header'">
-        <pre class="flex-1" [innerHtml]="response?.headers | rsYaml | rsCode"></pre>
+        <pre class="flex-1" [innerHtml]="response?.headers | json | rsCode"></pre>
     </div>
     <div class="flex-1 p-2" *ngSwitchCase="'request'">
         <div class="p-1">
-            <a class="option on">Preview Request</a>
-            <a class="option">Share Request</a>
+            <a class="option" [ngClass]="{on: !shareView}" (click)="shareView = false">Preview Request</a>
+            <a class="option" [ngClass]="{on: shareView}" (click)="shareRequest()">Share Request</a>
         </div>
         <hr/>
 
-        <pre [innerHtml]="(previewRequest || {}) | rsYaml | rsCode"></pre>
+        <pre [innerHtml]="(previewRequest || {}) | json | rsCode" *ngIf="!shareView"></pre>
+        <div *ngIf="shareView">
+            <div class="p-2 d-flex justify-content-end">
+                <a class="link option on smaller">Pretty</a>
+            </div>
+            <textarea [id]="'share_' + id" class="form-control smaller code" rows="20">{{request | rsSortKeys | rsJson}}</textarea>
+
+            <div id="xxx" class="p-2">
+                <a class="btn btn-secondary btn-sm link copy" (click)="copyShare()" [attr.data-clipboard-target]="'#share_' + id">Copy</a>
+                <a class="btn btn-secondary btn-sm link" href="data:text/html,HelloWorld!" download="something.html">Download</a>
+                <!--<a class="btn btn-secondary btn-sm link" (click)="dropboxShare()">Save To Dropbox</a>-->
+c            </div>
+
+<!--            <div class="d-flex p-2">
+                <div class="p-2 m-2">
+                    <h1 class="ion-social-dropbox p-2 m-2" style="font-size: 6em;"></h1>
+                </div>
+                <div>
+                    <h3>Connect Dropbox</h3>
+                    <p>Connect dropbox to store and share requests with collaborators</p>
+                    <button class="btn btn-info link">Connect</button>
+                </div>
+            </div>-->
+        </div>
     </div>
     <div class="flex flex-1 p-2" *ngSwitchCase="'schema'">
-        <pre class="flex-1" [innerHtml]="(schema || {}) | rsYaml | rsCode"></pre>
+        <pre class="flex-1" [innerHtml]="(schema || {}) | json | rsCode"></pre>
     </div>
     <div class="flex flex-1 p-2" *ngSwitchCase="'error'">
         <h1>Something goes wrong ... Have you installed the Chrome extension?</h1>

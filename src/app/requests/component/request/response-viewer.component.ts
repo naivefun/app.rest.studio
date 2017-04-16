@@ -1,4 +1,5 @@
 import {
+    AfterViewInit,
     Component, EventEmitter, HostBinding, Input,
     OnChanges, Output, SimpleChanges, ViewChild
 }
@@ -20,12 +21,16 @@ import {
     from '../../../@utils/string.utils';
 import { TextMode } from '../../../@model/editor';
 import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
+import * as Clipboard from 'clipboard';
+import * as dropbox from 'dropbox';
+import * as gapi from 'googleapis';
 
+declare var global_: any;
 @Component({
     selector: 'response-viewer',
     templateUrl: './response-viewer.component.html'
 })
-export class ResponseViewerComponent implements OnChanges {
+export class ResponseViewerComponent implements OnChanges, AfterViewInit {
     @Input() public id: string;
     @Input() public request: DefaultHttpRequest;
     @Input() public response: DefaultHttpResponse;
@@ -41,12 +46,18 @@ export class ResponseViewerComponent implements OnChanges {
     public bodyTextMode: TextMode = TextMode.JAVASCRIPT;
     public availableViews = [ResponseView.REQUEST];
     public view = ResponseView.REQUEST;
+    public shareView = false;
     @HostBinding('class.full-screen')
     public fullScreen = false;
     private responseObject: Object;
     private digestObject: Object;
     private previewRequest: any;
     private schema: Object;
+
+    public ngAfterViewInit() {
+        console.debug('dropbox', dropbox);
+        return;
+    }
 
     public ngOnChanges(changes: SimpleChanges): void {
         console.debug('ResponseViewerComponent response changes', changes);
@@ -92,6 +103,8 @@ export class ResponseViewerComponent implements OnChanges {
         } else {
             this.reset();
         }
+
+        let copyable = new Clipboard('.copy');
     }
 
     public switchView(view: ResponseView) {
@@ -140,6 +153,10 @@ export class ResponseViewerComponent implements OnChanges {
 
         // this.previewRequest = req;
         this.previewRequest = toAxiosOptions(request);
+    }
+
+    public sharedRequest(minified = true) {
+        return '';
     }
 
     public clearResponse() {
@@ -194,6 +211,56 @@ export class ResponseViewerComponent implements OnChanges {
             this.viewAsJson();
         }
     }
+
+    // region share
+    public shareRequest() {
+        this.shareView = true;
+    }
+
+    public copyShare() {
+        return;
+    }
+
+    public downloadShare() {
+        return;
+    }
+
+    public googleShare() {
+        return;
+    }
+
+    public dropboxShare() {
+        let dbx = new dropbox({clientId: 'eeiyjdaf41jyfy0'});
+        let authUrl = dbx.getAuthenticationUrl('http://localhost:3000/assets/auth/dropbox.html');
+        let win = window.open(authUrl, 'auth');
+        global_.onReceiveDropboxToken = url => {
+            win.close();
+            alert(url);
+        };
+
+        // let access_token = 'wHN2W8bN5aAAAAAAAAAADQ_apZXph-pZymF7diebrOp8SWOvsqOxIW7U9arWzHH4';
+        // let dbx = new dropbox({ accessToken: access_token });
+        // dbx.filesListFolder({path: '', recursive: false, include_media_info: false,
+        // include_deleted: false, include_has_explicit_shared_members: false})
+        //     .then(function(response) {
+        //         console.debug('response', response);
+        //     })
+        //     // NOTE: Need to explicitly specify type of error here, since TypeScript cannot infer it.
+        //     // The type is mentioned in the TSDoc for filesListFolder, so hovering over filesListFolder
+        //     // in a TS-equipped editor (e.g., Visual Studio Code) will show you that documentation.
+        //     .catch(function(error) {
+        //         console.error(error);
+        //     });
+        // dbx.filesUpload({path: '/app.rest.studio/hello.txt', contents: 'Hello world'})
+        //     .then(function(response) {
+        //         console.log(response);
+        //     })
+        //     .catch(function(error) {
+        //         console.error(error);
+        //     });
+    }
+
+    // endregion
 
     private getRenderObject() {
         return this.digestObject || this.responseObject;
