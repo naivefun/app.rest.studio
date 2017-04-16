@@ -31,6 +31,9 @@ module.exports = function (config) {
      */
     files: [
       { pattern: './config/spec-bundle.js', watched: false },
+      { pattern: './src/assets/js/jquery.js', watched: false },
+      { pattern: './src/assets/js/tether.js', watched: false },
+      { pattern: './src/assets/js/bootstrap.js', watched: false },
       { pattern: './src/assets/**/*', watched: false, included: false, served: true, nocache: false }
     ],
 
