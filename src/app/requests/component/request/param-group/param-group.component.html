@@ -1,15 +1,21 @@
 <div>
-    <div *ngFor="let param of paramGroup">
-        <div class="row">
+    <div [ngClass]="{off: param.off}" *ngFor="let param of paramGroup">
+        <div class="row" style="padding: .25em 0;">
             <div class="col-md-3">
                 <input type="text" class="form-control" placeholder="parameter key"
                        [(ngModel)]="param.key"
                        (change)="emitChanges()"/>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-7">
                 <input type="text" class="form-control" placeholder="value"
                        [(ngModel)]="param.value"
                        (change)="emitChanges()"/>
+            </div>
+            <div class="col-md-2 icons d-flex justify-content-center">
+                <a class="ion-android-checkmark-circle link" [ngClass]="{off: param.off}"
+                    (click)="param.off = !!!param.off"></a>
+                <a class="ion-ios-copy-outline link" (click)="clone(param)"></a>
+                <a class="ion-close link" (click)="delete(param)"></a>
             </div>
         </div>
     </div>

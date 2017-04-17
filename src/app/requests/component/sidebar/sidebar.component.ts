@@ -1,8 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { DefaultHttpRequest } from '../../../@model/http/http-request';
 import { State } from '../../../store/reducer';
 import { Store } from '@ngrx/store';
-import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '../../store/action';
+import { CreateRequestAction, DeleteRequestAction, SelectRequestAction, UpRequestAction } from '../../store/action';
+import { OnPushComponent } from '../../../@shared/components/base.component';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'requests-sidebar',
@@ -20,23 +22,26 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
         }
 
         a.btn-create-request:hover {
-            background-color: #31a0c9;
+            background-color: #2c93e1;
             color: #fff;
+            background: linear-gradient(to bottom, #086ed5, #055db5);
         }
 
         li {
             display: block;
+            position: relative;
             padding: .4em .5em;
             word-wrap: break-word;
             line-height: 130%;
             border-top: 1px solid transparent;
             border-bottom: 1px solid transparent;
-            transition-property: all;
-            transition-duration: .2s;
+            max-height: 54px;
+            text-overflow: ellipsis;
         }
 
         li a {
             display: table-cell;
+            color: #999;
         }
 
         li span {
@@ -45,7 +50,7 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: 20px;
-            font-size: 12px;
+            font-size: 14px;
         }
 
         li:hover {
@@ -53,22 +58,44 @@ import { CreateRequestAction, DeleteRequestAction, SelectRequestAction } from '.
         }
 
         li.active {
-            background-color: #e8e8e8;
-            color: #666;
+            background-color: #fff;
+            color: #055db5;
             border-top: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
         }
 
         li.active a {
-            color: darkslateblue;
+            color: #055db5;
+        }
+        
+        li .title {
+            flex-grow: 100;
+        }
+
+        li .menu {
+            display: none;
+            padding: 0 .25em;
+        }
+
+        .menu a {
+            padding: 0 .25em;
+            /*display: inline-flex;*/
+        }
+
+        li:hover .menu {
+            display: flex;
+            justify-items: center;
+            align-items: center;
         }
     `]
 })
-export class RequestsSidebarComponent {
+export class RequestsSidebarComponent extends OnPushComponent {
     @Input() public requests: DefaultHttpRequest[] = [];
     @Input() public activeRequestId: string;
 
-    constructor(private store: Store<State>) {
+    constructor(private store: Store<State>,
+                private cd: ChangeDetectorRef) {
+        super(cd);
     }
 
     public createRequest() {
@@ -80,7 +107,13 @@ export class RequestsSidebarComponent {
         this.store.dispatch(new SelectRequestAction(id));
     }
 
-    public deleteRequest(id: string) {
+    public deleteRequest(id: string, e: any) {
+        if (e) e.stopPropagation();
         this.store.dispatch(new DeleteRequestAction(id));
+    }
+
+    public upRequest(id: string, e: any) {
+        if (e) e.stopPropagation();
+        this.store.dispatch(new UpRequestAction(id));
     }
 }

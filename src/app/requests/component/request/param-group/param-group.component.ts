@@ -4,7 +4,26 @@ import * as _ from 'lodash';
 
 @Component({
     selector: 'request-param-group',
-    templateUrl: './param-group.component.html'
+    templateUrl: './param-group.component.html',
+    styles: [`
+        .off input {
+            color: #ddd;
+            font-weight: 300;
+        }
+
+        .icons a {
+            padding: 0 .5em;
+            font-size: 1.15em;
+        }
+
+        .icons a.off {
+            color: #ddd;
+        }
+
+        .icons a.off:hover {
+            color: #999;
+        }
+    `]
 })
 export class ParamGroupComponent {
     @Input() public paramGroup: HttpRequestParam[];
@@ -20,6 +39,17 @@ export class ParamGroupComponent {
         }
 
         e.target.value = '';
+    }
+
+    public delete(param: HttpRequestParam) {
+        _.pull(this.paramGroup, param);
+    }
+
+    public clone(param: HttpRequestParam) {
+        let clone = new HttpRequestParam(param.key);
+        clone.off = param.off;
+        let index = _.indexOf(this.paramGroup, param);
+        this.paramGroup.splice(index + 1, 0, clone);
     }
 
     public emitChanges() {

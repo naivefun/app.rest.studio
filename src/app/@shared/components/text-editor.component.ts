@@ -33,7 +33,7 @@ declare const ace: any;
 export class TextEditorComponent extends OnPushComponent implements AfterViewInit, OnChanges {
     public id = shortid();
 
-    @Input() public mode: TextMode; // follow ace editor mode
+    @Input() public mode: TextMode = TextMode.JSON; // follow ace editor mode
     @Input() public objectMode: boolean; // indicate text should be json/yaml object string
     @Input() public disableAutoDetect: boolean; // do not detect text mode on the fly
     @Input() public lazyInit: boolean = false; // delay init ace editor
@@ -118,7 +118,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
         editor.renderer.setShowGutter(this.lineNumbers);
         editor.setTheme('ace/theme/github');
         editor.setOptions({
-            // enableSnippets: true,
+            enableSnippets: true,
             // enableLinking: true,
             enableLiveAutocompletion: false,
             enableBasicAutocompletion: true,

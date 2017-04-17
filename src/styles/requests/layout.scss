@@ -53,11 +53,13 @@ requests {
         flex-grow: 1;
         display: flex;
         background-color: #fcfcfc;
+        overflow-y: scroll;
       }
     }
 
     response-viewer.full-screen {
       width: 100%;
+      height: 100%;
     }
   }
 

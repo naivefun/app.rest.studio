@@ -9,7 +9,9 @@ export class BaseComponent implements OnChanges, OnDestroy {
         console.info(this.constructor.name, changes);
     }
 
-    public onChange(changes: SimpleChanges, field: string, consumer: (value, previousValue, change) => void, allowNull = true) {
+    public onChange(changes: SimpleChanges, field: string,
+                    consumer: (value, previousValue, change) => void,
+                    allowNull = false) {
         let change = changes[field];
         if (change) {
             if (consumer && (allowNull || change.currentValue)) {

@@ -8,7 +8,8 @@
     <div class="flex-1">
         <div class="btn-group">
             <button class="btn btn-sm btn-success ion-play link" (click)="run()"> Run</button>
-            <button type="button" class="btn btn-sm btn-success link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+            <button type="button" class="btn btn-sm btn-success link dropdown-toggle dropdown-toggle-split"
+                    data-toggle="dropdown">
                 <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
@@ -19,7 +20,10 @@
 </div>
 <div class="content" *ngIf="_request">
     <div class="section">
-        <div class="b">Basic</div>
+        <div class="b" style="padding: .7em 0;">
+            <input class="form-control b" placeholder="request title" [(ngModel)]="_request.title"
+                   (change)="emitChanges()"/>
+        </div>
         <div style="display: flex; align-items: center;">
             <div class="btn-group">
                 <a class="link dropdown-toggle" data-toggle="dropdown">
@@ -38,25 +42,55 @@
         </div>
     </div>
     <div class="section" *ngIf="!off.query">
-        <div><b>Query Parameters</b></div>
+        <div class="header d-flex justify-content-end">
+            <div class="mr-auto"><b>Query</b></div>
+            <a class="link">Extract From URL</a>
+        </div>
         <request-param-group [paramGroup]="_request.queryParams"
                              (paramsUpdated)="emitChanges()">
         </request-param-group>
     </div>
     <div class="section" *ngIf="!off.header">
-        <div><b>Header Parameters</b></div>
+        <div class="header d-flex justify-content-end">
+            <div class="mr-auto"><b>Header</b></div>
+            <a class="ion-plus link"> Insert</a>
+        </div>
         <request-param-group [paramGroup]="_request.headerParams"
                              (paramsUpdated)="emitChanges()">
         </request-param-group>
     </div>
     <div class="section" *ngIf="!off.body">
-        <div><b>Form Parameters</b></div>
+        <div class="header d-flex justify-content-end">
+            <div class="mr-auto"><b>Body</b></div>
+            <a class="dropdown">
+                <a class="dropdown-toggle link" data-toggle="dropdown">
+                    {{_request?.mode || 'none'}}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" *ngFor="let mode of modes"
+                       (click)="setMode(mode)">{{mode}}</a>
+                </div>
+            </a>
+        </div>
         <request-param-group [paramGroup]="_request.formParams"
-                             (paramsUpdated)="emitChanges()">
+                             (paramsUpdated)="emitChanges()"
+                             *ngIf="bodyEditor === 'form'">
         </request-param-group>
+        <text-editor [text]="_request?.body" [minLines]="5" [maxLines]="30" [mode]="editorMode"
+                     [lineNumbers]="true" [wrap]="true"
+                     (onTextChanged)="updateBody($event.text)"
+                     [hidden]="bodyEditor !== 'editor'"></text-editor>
+        <div *ngIf="bodyEditor === 'bin'">
+            <h3>Coming soon</h3>
+        </div>
+        <div *ngIf="!bodyEditor">
+            No body
+        </div>
     </div>
     <div class="section" *ngIf="!off.description">
-        <div><b>Description</b></div>
+        <div class="header d-flex justify-content-end">
+            <div class="mr-auto"><b>Description</b></div>
+        </div>
         <textarea class="form-control" rows="5" [(ngModel)]="_request.description"></textarea>
     </div>
 </div>

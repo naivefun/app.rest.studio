@@ -1,7 +1,13 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { DefaultHttpRequest, HTTP_METHODS, HttpMethod, ParamField } from '../../../@model/http/http-request';
+import {
+    BIN_BODY_MODES,
+    BODY_MODES, BodyMode, DefaultHttpRequest, EDITOR_BODY_MODES, FORM_BODY_MODES, HTTP_METHODS, HttpMethod,
+    ParamField
+} from '../../../@model/http/http-request';
 import * as _ from 'lodash';
 import { DefaultHttpClient } from '../../../@shared/http.service';
+import { bodyMode2TextMode } from '../../../@utils/request.utils';
+import { TextMode } from '../../../@model/editor';
 
 @Component({
     selector: 'request-builder',
@@ -9,6 +15,13 @@ import { DefaultHttpClient } from '../../../@shared/http.service';
     styles: [`
         .section {
             padding: 1em;
+        }
+
+        .section .header {
+            padding-bottom: .2em;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: .3em;
+            padding-right: .5em;
         }
     `]
 })
@@ -20,6 +33,9 @@ export class RequestBuilderComponent implements OnChanges {
     @Output() public onSendRequest = new EventEmitter<DefaultHttpRequest>();
     public methods = HTTP_METHODS;
     public off: any = {};
+    public modes: BodyMode[] = BODY_MODES;
+    public bodyEditor: string;
+    public editorMode: TextMode;
 
     public _request: DefaultHttpRequest; // internal request
     @ViewChild('urlInput')
@@ -59,6 +75,29 @@ export class RequestBuilderComponent implements OnChanges {
                 this.urlInput.nativeElement.focus();
             }
         }, 100);
+        this.setMode(this._request.mode);
+    }
+
+    public setMode(mode: BodyMode) {
+        this._request.mode = mode;
+        if (_.includes(FORM_BODY_MODES, mode)) {
+            this.bodyEditor = 'form';
+        } else if (_.includes(EDITOR_BODY_MODES, mode)) {
+            this.bodyEditor = 'editor';
+        } else if (_.includes(BIN_BODY_MODES, mode)) {
+            this.bodyEditor = 'bin';
+        } else {
+            delete this.bodyEditor;
+        }
+        this.updateEditorMode();
+    }
+
+    public updateEditorMode() {
+        this.editorMode = bodyMode2TextMode(this._request.mode);
+    }
+
+    public updateBody(text: string) {
+        this._request.body = text;
     }
 
     public emitChanges() {

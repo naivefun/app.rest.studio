@@ -1,11 +1,16 @@
-<a class="link btn-create-request ion-plus" (click)="createRequest()"> Create Request</a>
-
+<div class="flex">
+    <a class="flex-1 link btn-create-request ion-ios-copy-outline" (click)="createRequest()"> Import</a>
+    <a class="flex-1 link btn-create-request ion-plus" (click)="createRequest()"> Create</a>
+</div>
 <ul class="list-unstyled">
     <li *ngFor="let request of requests"
-        class="link"
+        class="link d-flex"
         [routerLink]="['/requests', request.id]"
         [ngClass]="{active: request.id === activeRequestId}">
-        <a class="ion-close p-1" (click)="deleteRequest(request.id)"> </a>
-        <span>{{request.url || request.id}}</span>
+        <span class="title">{{request.title || request.url || request.id}}</span>
+        <div class="menu">
+            <a class="ion-close" (click)="deleteRequest(request.id, $event)"> </a>
+            <a class="ion-android-arrow-dropup-circle" (click)="upRequest(request.id, $event)"> </a>
+        </div>
     </li>
 </ul>

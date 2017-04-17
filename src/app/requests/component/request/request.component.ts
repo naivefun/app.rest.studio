@@ -47,7 +47,8 @@ export class RequestsRequestComponent implements OnInit {
     }
 
     public onRequestUpdated(request: DefaultHttpRequest) {
-        if (this.request.url !== request.url) {
+        if (this.request.url !== request.url
+            || this.request.title !== request.title) {
             this.store.dispatch(new UpdateRequestAction(request));
         } else {
             this.request = _.cloneDeep(request);

@@ -10,6 +10,7 @@ export const RequestsActionTypes = {
     RESPONSE_RECEIVED: type('RESPONSE_RECEIVED'),
     SAVE_REQUEST: type('SAVE_REQUEST'),
     SAVE_REQUEST_SUCCESS: type('SAVE_REQUEST_SUCCESS'),
+    UP_REQUEST: type('UP_REQUEST'),
     DELETE_REQUEST: type('DELETE_REQUEST'),
     DELETE_REQUEST_SUCCESS: type('DELETE_REQUEST_SUCCESS'),
     LOAD_REQUESTS: type('LOAD_REQUESTS'),
@@ -57,6 +58,13 @@ export class SaveRequestAction implements Action {
 
 export class DeleteRequestAction implements Action {
     public type = RequestsActionTypes.DELETE_REQUEST;
+
+    constructor(public payload: string) {
+    }
+}
+
+export class UpRequestAction implements Action {
+    public type = RequestsActionTypes.UP_REQUEST;
 
     constructor(public payload: string) {
     }

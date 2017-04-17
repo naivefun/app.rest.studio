@@ -21,6 +21,8 @@ export function reducer(state = RequestsInitialState, action: RequestsActions): 
             return handleLoadRequestsSuccess(state, action.payload as DefaultHttpRequest[]);
         case RequestsActionTypes.DELETE_REQUEST:
             return handleDeleteRequest(state, action.payload as string);
+        case RequestsActionTypes.UP_REQUEST:
+            return handleUpRequest(state, action.payload as string);
         case RequestsActionTypes.SELECT_REQUEST:
             return handleSelectRequest(state, action.payload as string);
         case RequestsActionTypes.RESPONSE_RECEIVED:
@@ -70,6 +72,18 @@ function handleSaveRequest(state: RequestsState, request: DefaultHttpRequest) {
 function handleSaveRequestSuccess(state: RequestsState, request: DefaultHttpRequest) {
     // TODO: replace with new request
     return mergeState(state, { savingRequest: false });
+}
+
+function handleUpRequest(state: RequestsState, id: string) {
+    let request = _.find(state.requests, req => req.id === id);
+    if (request) {
+        _.pull(state.requests, request);
+        let requests = [request, ...state.requests];
+        request.createdAt = Date.now();
+        return mergeState(state, { requests });
+    } else {
+        return state;
+    }
 }
 
 function handleDeleteRequest(state: RequestsState, id: string) {
