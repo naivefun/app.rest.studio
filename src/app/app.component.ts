@@ -11,6 +11,10 @@ import { AppState } from './app.service';
 import * as _ from 'lodash';
 import { DefaultHttpRequest, HttpRequestParam } from './@model/http/http-request';
 import { DefaultHttpClient } from './@shared/http.service';
+import { Store } from '@ngrx/store';
+import { State } from './store/reducer';
+import { ConfigService } from './@shared/config.service';
+import { UpdateConfigAction } from './store/config-reducer';
 
 declare const chrome: any, $: any;
 /*
@@ -29,7 +33,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     public name = 'app.rest.studio';
     public extensionNotInstalled: boolean;
 
-    constructor(public appState: AppState) {
+    constructor(public appState: AppState,
+                private config: ConfigService,
+                private store: Store<State>) {
     }
 
     public ngOnInit() {
@@ -40,6 +46,9 @@ export class AppComponent implements OnInit, AfterViewInit {
                 $('[data-toggle="tooltip"]').tooltip();
             }, 50);
         }, 2000);
+
+        this.config.getConfig()
+            .then(config => this.store.dispatch(new UpdateConfigAction(config)));
     }
 
     public ngAfterViewInit() {

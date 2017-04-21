@@ -64,8 +64,8 @@ export function formatYaml(text: string, indent = 2, sortKeys = false): string {
     return text;
 }
 
-export function highlightCode(text: string) {
-    let result = hljs.highlightAuto(text);
+export function highlightCode(text: string, languageSubset?: string[]) {
+    let result = hljs.highlightAuto(text, languageSubset);
     console.debug('highlightCode result:', result);
     return result.value;
 }

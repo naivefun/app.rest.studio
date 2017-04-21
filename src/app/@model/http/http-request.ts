@@ -28,7 +28,7 @@ export class DefaultHttpRequest implements HttpRequest {
     public body: string;
 
     public disabledFields: ParamField[] = [];
-
+    public syncTargets: SyncTarget[]; // sync to multi targets
     public createdAt: number;
 
     constructor(url: string, method = HttpMethod.GET, title?: string) {
@@ -38,6 +38,11 @@ export class DefaultHttpRequest implements HttpRequest {
         this.method = method;
         this.createdAt = Date.now();
     }
+}
+
+export interface SyncTarget {
+    connectedId: string;
+    path: string;
 }
 
 export interface HttpRequest {
@@ -64,6 +69,7 @@ export const HTTP_METHODS = [
 export enum BodyMode {
     NONE = <any> 'none',
     JSON = <any> 'json',
+    HJSON = <any> 'hjson',
     FORM = <any> 'form',
     FORM_URL_ENCODED = <any> 'form-url-encoded',
     XML = <any> 'xml',
@@ -75,6 +81,7 @@ export enum BodyMode {
 export const BODY_MODES = [
     BodyMode.NONE,
     BodyMode.JSON,
+    BodyMode.HJSON,
     BodyMode.FORM,
     BodyMode.FORM_URL_ENCODED,
     BodyMode.XML,
@@ -95,6 +102,7 @@ export const BIN_BODY_MODES = [
 
 export const EDITOR_BODY_MODES = [
     BodyMode.JSON,
+    BodyMode.HJSON,
     BodyMode.XML,
     BodyMode.YAML,
     BodyMode.TEXT

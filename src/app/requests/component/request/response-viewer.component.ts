@@ -23,17 +23,21 @@ import { TextMode } from '../../../@model/editor';
 import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
 import * as Clipboard from 'clipboard';
 import * as dropbox from 'dropbox';
-import * as gapi from 'googleapis';
+import { SyncService } from '../../../@shared/sync/dropbox.service';
+import { ConfigService } from '../../../@shared/config.service';
+import { ConnectAccount } from '../../../@model/sync/connect-account';
+import { BaseComponent } from '../../../@shared/components/base.component';
 
 declare var global_: any;
 @Component({
     selector: 'response-viewer',
     templateUrl: './response-viewer.component.html'
 })
-export class ResponseViewerComponent implements OnChanges, AfterViewInit {
+export class ResponseViewerComponent extends BaseComponent implements OnChanges, AfterViewInit {
     @Input() public id: string;
     @Input() public request: DefaultHttpRequest;
     @Input() public response: DefaultHttpResponse;
+    @Input() public connections: ConnectAccount[];
 
     @Output() public onClearResponse = new EventEmitter<string>();
 
@@ -47,6 +51,7 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
     public availableViews = [ResponseView.REQUEST];
     public view = ResponseView.REQUEST;
     public shareView = false;
+    public noOfConnections = 0;
     @HostBinding('class.full-screen')
     public fullScreen = false;
     private responseObject: Object;
@@ -54,12 +59,18 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
     private previewRequest: any;
     private schema: Object;
 
+    constructor(private config: ConfigService,
+                private syncService: SyncService) {
+        super();
+    }
+
     public ngAfterViewInit() {
         console.debug('dropbox', dropbox);
         return;
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
         console.debug('ResponseViewerComponent response changes', changes);
         let request = changes['request'];
         if (request && request.currentValue) {
@@ -103,6 +114,10 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
         } else {
             this.reset();
         }
+
+        this.onChange(changes, 'connections', value => {
+            this.noOfConnections = _.size(value);
+        });
 
         let copyable = new Clipboard('.copy');
     }
@@ -230,12 +245,21 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
     }
 
     public dropboxShare() {
-        let dbx = new dropbox({clientId: 'eeiyjdaf41jyfy0'});
-        let authUrl = dbx.getAuthenticationUrl('http://localhost:3000/assets/auth/dropbox.html');
+
+        let PROVIDER = 'DROPBOX';
+        let provider = this.syncService.connectProvider(PROVIDER);
+
+        // CONNECT TO NEW PROVIDER
+        let authUrl = provider.authUrl();
         let win = window.open(authUrl, 'auth');
         global_.onReceiveDropboxToken = url => {
             win.close();
-            alert(url);
+            let token = provider.extractAccessToken(url);
+            this.syncService.persistConnection(null)
+                .then(result => {
+                    // TODO: at least accounts are available
+                    // show actual connected accounts for choose
+                });
         };
 
         // let access_token = 'wHN2W8bN5aAAAAAAAAAADQ_apZXph-pZymF7diebrOp8SWOvsqOxIW7U9arWzHH4';

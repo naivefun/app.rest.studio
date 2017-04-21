@@ -23,8 +23,16 @@ export class DbService {
     public getPromise(id: string, db = DB.MAIN): Promise<any> {
         return this.db(db).get(id)
             .then(result => {
-                if (!result) throw new Error(`object[${id}][${db}] is not found`);
+                console.debug('pouch get object result', result);
                 return result;
+            })
+            .catch(error => {
+                console.error('pouch get object error', error);
+                if (error.status === 404) {
+                    return null;
+                }
+
+                throw error;
             });
     }
 
@@ -57,8 +65,12 @@ export class DbService {
         } else {
             return this.getPromise(id, db)
                 .then(doc => {
-                    object._rev = doc._rev;
-                    return this.db(db).put(object);
+                    if (doc) {
+                        object._rev = doc._rev;
+                        return this.db(db).put(object);
+                    } else {
+                        return this.db(db).post(object);
+                    }
                 })
                 .then(result => {
                     object._rev = result.rev;

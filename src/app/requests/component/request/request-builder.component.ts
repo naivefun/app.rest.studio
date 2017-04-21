@@ -8,6 +8,8 @@ import * as _ from 'lodash';
 import { DefaultHttpClient } from '../../../@shared/http.service';
 import { bodyMode2TextMode } from '../../../@utils/request.utils';
 import { TextMode } from '../../../@model/editor';
+import { extractPathVars, queryString2Object } from '../../../@utils/url.utils';
+import { shortid } from '../../../@utils/string.utils';
 
 @Component({
     selector: 'request-builder',
@@ -98,6 +100,26 @@ export class RequestBuilderComponent implements OnChanges {
 
     public updateBody(text: string) {
         this._request.body = text;
+    }
+
+    public extractQuery() {
+        let queryObject = queryString2Object(this._request.url);
+        if (!_.isEmpty(queryObject)) {
+            _.forOwn(queryObject, (value, key) => {
+                if (value || key)
+                    this.request.queryParams.push({
+                        id: shortid(), off: false,
+                        key, value
+                    });
+            });
+
+            this.request.queryParams = _.clone(this.request.queryParams);
+            this.request.url = this.request.url.split('?')[0];
+        }
+    }
+
+    public selectHeaders() {
+        throw new Error('not implemented');
     }
 
     public emitChanges() {

@@ -2,7 +2,7 @@
 <script>
     if (opener) {
         console.log(opener);
-        opener.global_.onReceiveDropboxToken(window.location);
+        opener.global_.onReceiveDropboxToken(window.location.href);
     } else {
         alert('cannot continue, please try again');
     }

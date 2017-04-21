@@ -42,6 +42,11 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { DbService } from './@shared/db.service';
 import { JsonPipe } from './@shared/pipes/json.pipe';
 import { SortKeysPipe } from './@shared/pipes/sort-keys.pipe';
+import { SyncService } from './@shared/sync/dropbox.service';
+import { DropboxSyncProvider } from './@shared/sync/sync.service';
+import { ConnectComponent } from './connect/connect.component';
+import { ImportComponent } from './import/import.component';
+import { ObjectToPairsPipe } from './@shared/pipes/object-to-pairs.pipe';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -50,7 +55,9 @@ const APP_PROVIDERS = [
     ConfigService,
     ChromeService,
     DefaultHttpClient,
-    DbService
+    DbService,
+    SyncService,
+    DropboxSyncProvider
 ];
 
 type StoreType = {
@@ -73,6 +80,8 @@ type StoreType = {
         RequestBuilderComponent,
         ResponseViewerComponent,
         ParamGroupComponent,
+        ConnectComponent,
+        ImportComponent,
 
         // shared,
         TextEditorComponent,
@@ -82,7 +91,8 @@ type StoreType = {
         CodePipe,
         YamlPipe,
         JsonPipe,
-        SortKeysPipe
+        SortKeysPipe,
+        ObjectToPairsPipe
     ],
     imports: [ // import Angular's modules
         BrowserModule,

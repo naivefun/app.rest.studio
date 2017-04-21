@@ -124,7 +124,8 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
             enableBasicAutocompletion: true,
             maxLines: this.maxLines,
             minLines: this.minLines,
-            fontFamily: '"Roboto Mono", "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace'
+            fontFamily: '"SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
+            fontSize: '12px'
         });
         editor.on('blur', () => {
             let text = this.getText();

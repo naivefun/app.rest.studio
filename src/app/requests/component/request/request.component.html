@@ -3,4 +3,5 @@
                  (onRequestUpdated)="onRequestUpdated($event)"></request-builder>
 <response-viewer [id]="id" [request]="request$ | async"
                  [response]="response$ | async"
+                 [connections]="connections$ | async"
                  (onClearResponse)="onClearResponse($event)"></response-viewer>
