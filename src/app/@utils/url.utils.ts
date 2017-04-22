@@ -106,7 +106,7 @@ function extractPathToken(token: string) {
     return `{{${token}}}`;
 }
 
-export function parseQueryString(str: string) {
+export function parseHashParams(str: string) {
     let result = {};
     if (str.includes('#')) {
         let hashes = str.split('#')[1];

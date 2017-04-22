@@ -1,32 +1,30 @@
 import {
     AfterViewInit,
-    Component, EventEmitter, HostBinding, Input,
-    OnChanges, Output, SimpleChanges, ViewChild
-}
-    from '@angular/core';
-import {
-    DefaultHttpRequest, HttpRequestParam
-}
-    from '../../../@model/http/http-request';
-import {
-    DefaultHttpResponse, ResponseView
-}
-    from '../../../@model/http/http-response';
-import * as _ from 'lodash';
-import { toAxiosOptions } from '../../../@utils/request.utils';
-import { generateSchema } from '../../../@utils/schema.utils';
-import {
-    isBinaryString, stringifyJson, stringifyYaml, tryParseAsObject
-}
-    from '../../../@utils/string.utils';
-import { TextMode } from '../../../@model/editor';
-import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
+    Component, ElementRef,
+    EventEmitter,
+    HostBinding,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges,
+    ViewChild
+} from '@angular/core';
 import * as Clipboard from 'clipboard';
 import * as dropbox from 'dropbox';
-import { SyncService } from '../../../@shared/sync/dropbox.service';
-import { ConfigService } from '../../../@shared/config.service';
+import * as _ from 'lodash';
+import { TextMode } from '../../../@model/editor';
+import { DefaultHttpRequest, HttpRequestParam } from '../../../@model/http/http-request';
+import { DefaultHttpResponse, ResponseView } from '../../../@model/http/http-response';
 import { ConnectAccount } from '../../../@model/sync/connect-account';
 import { BaseComponent } from '../../../@shared/components/base.component';
+import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
+import { ConfigService } from '../../../@shared/config.service';
+import { SyncService } from '../../../@shared/sync/sync.service';
+import { toAxiosOptions } from '../../../@utils/request.utils';
+import { generateSchema } from '../../../@utils/schema.utils';
+import { stringifyJson, stringifyYaml, tryParseAsObject } from '../../../@utils/string.utils';
+import { CloudSyncProvider } from '../../../@shared/sync/dropbox.service';
+import { sortKeys, walkObject, compressObject } from "../../../@utils/object.utils";
 
 declare var global_: any;
 @Component({
@@ -43,6 +41,8 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
 
     @ViewChild('editor')
     public editor: TextEditorComponent;
+    @ViewChild('cloudPathInput')
+    public cloudPathInput: ElementRef;
 
     public bodyString: string;
     public duration: number;
@@ -60,7 +60,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
     private schema: Object;
 
     constructor(private config: ConfigService,
-                private syncService: SyncService) {
+        private syncService: SyncService) {
         super();
     }
 
@@ -245,46 +245,54 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
     }
 
     public dropboxShare() {
+        return;
+    }
 
-        let PROVIDER = 'DROPBOX';
-        let provider = this.syncService.connectProvider(PROVIDER);
-
-        // CONNECT TO NEW PROVIDER
-        let authUrl = provider.authUrl();
-        let win = window.open(authUrl, 'auth');
-        global_.onReceiveDropboxToken = url => {
-            win.close();
-            let token = provider.extractAccessToken(url);
-            this.syncService.persistConnection(null)
+    public saveToCloud() {
+        let path = this.cloudPathInput.nativeElement.value;
+        let provider = this.getProvider(this.request.defaultBindId);
+        if (provider) {
+            let content = JSON.stringify(sortKeys(compressObject(this.request, undefined, {method: 'GET'})));
+            alert(content);
+            provider.saveFile(path, content, 'application/json')
                 .then(result => {
-                    // TODO: at least accounts are available
-                    // show actual connected accounts for choose
+                    console.debug('save file result', result);
                 });
-        };
+        }
+    }
 
-        // let access_token = 'wHN2W8bN5aAAAAAAAAAADQ_apZXph-pZymF7diebrOp8SWOvsqOxIW7U9arWzHH4';
-        // let dbx = new dropbox({ accessToken: access_token });
-        // dbx.filesListFolder({path: '', recursive: false, include_media_info: false,
-        // include_deleted: false, include_has_explicit_shared_members: false})
-        //     .then(function(response) {
-        //         console.debug('response', response);
-        //     })
-        //     // NOTE: Need to explicitly specify type of error here, since TypeScript cannot infer it.
-        //     // The type is mentioned in the TSDoc for filesListFolder, so hovering over filesListFolder
-        //     // in a TS-equipped editor (e.g., Visual Studio Code) will show you that documentation.
-        //     .catch(function(error) {
-        //         console.error(error);
-        //     });
-        // dbx.filesUpload({path: '/app.rest.studio/hello.txt', contents: 'Hello world'})
-        //     .then(function(response) {
-        //         console.log(response);
-        //     })
-        //     .catch(function(error) {
-        //         console.error(error);
-        //     });
+    public downloadFromCloud() {
+        let path = this.cloudPathInput.nativeElement.value;
+        let provider = this.getProvider(this.request.defaultBindId);
+        if (provider) {
+            provider.getFile(path)
+                .then(result => {
+                    console.debug('download file result', result);
+                });
+        }
+    }
+
+    public generateSahredLink() {
+        let path = this.cloudPathInput.nativeElement.value;
+        let provider = this.getProvider(this.request.defaultBindId);
+        if (provider) {
+            provider.createSharedLink(path)
+                .then(url => {
+                    // TODO: persist to DB & Upload again
+                    this.request.sharedLink = url;
+                });
+        }
     }
 
     // endregion
+
+    private getProvider(id: string): CloudSyncProvider {
+        let conn = this.connections.find(con => con.id === id);
+        if (conn) {
+            let provider = this.syncService.connectProvider(conn.provider, conn.accessToken);
+            return provider;
+        }
+    }
 
     private getRenderObject() {
         return this.digestObject || this.responseObject;

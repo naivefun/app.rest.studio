@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { State } from '../../../store/reducer';
 import { Store } from '@ngrx/store';
@@ -42,7 +42,7 @@ export class RequestsRequestComponent implements OnInit {
     public ngOnInit() {
         this.route.params.subscribe(params => {
             console.debug('params', params);
-            this.id = params['id'];
+            this.id = params[ 'id' ];
             if (this.id) {
                 this.store.dispatch(new SelectRequestAction(this.id));
             }

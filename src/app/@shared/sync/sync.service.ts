@@ -1,13 +1,12 @@
-import { CloudSyncProvider, DropboxSyncProvider } from './dropbox.service';
 import { Injectable } from '@angular/core';
-import { ConfigService } from '../config.service';
 import { ConnectAccount, ConnectProvider } from '../../@model/sync/connect-account';
+import { ConfigService } from '../config.service';
+import { CloudSyncProvider, DropboxSyncProvider } from './dropbox.service';
 
 @Injectable()
 export class SyncService {
 
-    constructor(private config: ConfigService,
-        private dropboxProvider: DropboxSyncProvider) {
+    constructor(private config: ConfigService) {
     }
 
     public connectProvider(provider: ConnectProvider, accessToken?: string): CloudSyncProvider {

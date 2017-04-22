@@ -67,10 +67,9 @@ export class DbService {
                 .then(doc => {
                     if (doc) {
                         object._rev = doc._rev;
-                        return this.db(db).put(object);
-                    } else {
-                        return this.db(db).post(object);
+                        object._id = id;
                     }
+                    return this.db(db).put(object);
                 })
                 .then(result => {
                     object._rev = result.rev;
@@ -97,11 +96,11 @@ export class DbService {
 
     // get cached db instance
     private db(dbName = DB.MAIN): any {
-        if (!this._db[dbName]) {
-            this._db[dbName] = new PouchDB(dbName);
+        if (!this._db[ dbName ]) {
+            this._db[ dbName ] = new PouchDB(dbName);
         }
 
-        return this._db[dbName];
+        return this._db[ dbName ];
     }
 
     // ensure pouchdb id

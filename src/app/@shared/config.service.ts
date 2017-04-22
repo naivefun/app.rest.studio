@@ -73,9 +73,11 @@ export class ConfigService {
 }
 
 export class LocalConfig {
+    public id: string;
     public connectedAccounts: ConnectAccount[];
 
     constructor() {
+        this.id = KEYS.LOCAL_CONFIG;
         this.connectedAccounts = [];
     }
 }

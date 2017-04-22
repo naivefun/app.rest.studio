@@ -69,6 +69,19 @@
                 </a>
             </div>
 
+            <div class="p-2" *ngIf="request && noOfConnections > 0">
+                <select [(ngModel)]="request.defaultBindId">
+                    <option *ngFor="let con of connections" [value]="con.id">{{con.title}}</option>
+                </select>
+
+                <input class="form-control" [value]="request.sharedLink" *ngIf="request.sharedLink"/>
+                <input #cloudPathInput class="form-control" placeholder="cloud storage path"
+                       value="/app.rest.studio/requests/request[{{request.id}}].json"/>
+                <button class="btn btn-sm btn-info" (click)="saveToCloud()">Save</button>
+                <button class="btn btn-sm btn-info" (click)="generateSahredLink()">Generate Shared Link</button>
+                <button class="btn btn-sm btn-info" (click)="downloadFromCloud()">Download From Cloud</button>
+            </div>
+
 
             <!--            <div class="d-flex p-2">
                             <div class="p-2 m-2">

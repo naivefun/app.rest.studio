@@ -28,7 +28,8 @@ export class DefaultHttpRequest implements HttpRequest {
     public body: string;
 
     public disabledFields: ParamField[] = [];
-    public syncTargets: SyncTarget[]; // sync to multi targets
+    public defaultBindId: string;
+    public sharedLink: string;
     public createdAt: number;
 
     constructor(url: string, method = HttpMethod.GET, title?: string) {

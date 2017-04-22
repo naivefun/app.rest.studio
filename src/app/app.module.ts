@@ -1,52 +1,52 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { ApplicationRef, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { ApplicationRef, NgModule } from '@angular/core';
-import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
+import { BrowserModule } from '@angular/platform-browser';
 import { PreloadAllModules, RouterModule } from '@angular/router';
+import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
+import { EffectsModule } from '@ngrx/effects';
+import { RouterStoreModule } from '@ngrx/router-store';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import '../styles/headings.css';
+
+import '../styles/styles.scss';
+import { ChromeService } from './@shared/chrome.service';
+import { TextEditorComponent } from './@shared/components/text-editor.component';
+import { ConfigService } from './@shared/config.service';
+import { DbService } from './@shared/db.service';
+import { DefaultHttpClient } from './@shared/http.service';
+import { CodePipe } from './@shared/pipes/code.pipe';
+import { JsonPipe } from './@shared/pipes/json.pipe';
+import { ObjectToPairsPipe } from './@shared/pipes/object-to-pairs.pipe';
+import { SortKeysPipe } from './@shared/pipes/sort-keys.pipe';
+import { TitleCasePipe } from './@shared/pipes/title-case.pipe';
+import { YamlPipe } from './@shared/pipes/yaml.pipe';
+import { DropboxSyncProvider } from './@shared/sync/dropbox.service';
+import { SyncService } from './@shared/sync/sync.service';
+import { AboutComponent } from './about';
+// App is our top level component
+import { AppComponent } from './app.component';
+import { APP_RESOLVER_PROVIDERS } from './app.resolver';
+import { ROUTES } from './app.routes';
+import { AppState, InternalStateType } from './app.service';
+import { ConnectComponent } from './connect/connect.component';
 /*
  * Platform and Environment providers/directives/pipes
  */
 import { ENV_PROVIDERS } from './environment';
-import { ROUTES } from './app.routes';
-// App is our top level component
-import { AppComponent } from './app.component';
-import { APP_RESOLVER_PROVIDERS } from './app.resolver';
-import { AppState, InternalStateType } from './app.service';
 import { HomeComponent } from './home';
-import { AboutComponent } from './about';
-import { NoContentComponent } from './no-content';
 import { XLargeDirective } from './home/x-large';
-
-import '../styles/styles.scss';
-import '../styles/headings.css';
-import { RequestsComponent } from './requests/requests.component';
-import { RequestsSidebarComponent } from './requests/component/sidebar/sidebar.component';
-import { StoreModule } from '@ngrx/store';
-import { reducer } from './store/reducer';
-import { EffectsModule } from '@ngrx/effects';
-import { RequestsEffects } from './requests/store/effect';
-import { RouterStoreModule } from '@ngrx/router-store';
-import { RequestsRequestComponent } from './requests/component/request/request.component';
-import { RequestBuilderComponent } from './requests/component/request/request-builder.component';
-import { ResponseViewerComponent } from './requests/component/request/response-viewer.component';
-import { ParamGroupComponent } from './requests/component/request/param-group/param-group.component';
-import { TitleCasePipe } from './@shared/pipes/title-case.pipe';
-import { CodePipe } from './@shared/pipes/code.pipe';
-import { ChromeService } from './@shared/chrome.service';
-import { DefaultHttpClient } from './@shared/http.service';
-import { ConfigService } from './@shared/config.service';
-import { YamlPipe } from './@shared/pipes/yaml.pipe';
-import { TextEditorComponent } from './@shared/components/text-editor.component';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { DbService } from './@shared/db.service';
-import { JsonPipe } from './@shared/pipes/json.pipe';
-import { SortKeysPipe } from './@shared/pipes/sort-keys.pipe';
-import { SyncService } from './@shared/sync/dropbox.service';
-import { DropboxSyncProvider } from './@shared/sync/sync.service';
-import { ConnectComponent } from './connect/connect.component';
 import { ImportComponent } from './import/import.component';
-import { ObjectToPairsPipe } from './@shared/pipes/object-to-pairs.pipe';
+import { NoContentComponent } from './no-content';
+import { ParamGroupComponent } from './requests/component/request/param-group/param-group.component';
+import { RequestBuilderComponent } from './requests/component/request/request-builder.component';
+import { RequestsRequestComponent } from './requests/component/request/request.component';
+import { ResponseViewerComponent } from './requests/component/request/response-viewer.component';
+import { RequestsSidebarComponent } from './requests/component/sidebar/sidebar.component';
+import { RequestsComponent } from './requests/requests.component';
+import { RequestsEffects } from './requests/store/effect';
+import { reducer } from './store/reducer';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -57,7 +57,6 @@ const APP_PROVIDERS = [
     DefaultHttpClient,
     DbService,
     SyncService,
-    DropboxSyncProvider
 ];
 
 type StoreType = {
@@ -70,7 +69,7 @@ type StoreType = {
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
 @NgModule({
-    bootstrap: [AppComponent],
+    bootstrap: [ AppComponent ],
     declarations: [
         AppComponent,
         NoContentComponent,
@@ -99,7 +98,7 @@ type StoreType = {
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
+        RouterModule.forRoot(ROUTES, {useHash: false, preloadingStrategy: PreloadAllModules}),
         // store
         StoreModule.provideStore(reducer),
         EffectsModule.run(RequestsEffects),
