@@ -4,10 +4,15 @@ import {
     getActiveRequest, getActiveRequestId, getActiveResponse, getRequests
 }
     from '../requests/store/selector';
+import { LocalConfig } from '../@shared/config.service';
 
 export const getRequestsState = (state: State) => {
     console.debug('global state', state);
     return state.requests;
+};
+
+export const getConfig = (state: State) => {
+    return state.config;
 };
 
 export const getRequestsRequests =
@@ -18,3 +23,6 @@ export const getRequestsActiveRequest =
     createSelector(getRequestsState, getActiveRequest);
 export const getRequestsActiveResponse =
     createSelector(getRequestsState, getActiveResponse);
+
+export const getConnections =
+    createSelector(getConfig, (state: LocalConfig) => state.connectedAccounts);

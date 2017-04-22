@@ -26,7 +26,7 @@ export function queryString2Object(url: string): Object {
     return {};
 }
 
-export function extractPathVars(url: string): string[] {
+export function extractPathlets(url: string): string[] {
     let result: string[] = [];
     if (url) {
         let regx = /[(]{1}:([\w\-_]+)[)]{1}|[\/]{1}:([\w\-_]+)[\/]{0,1}/g;
@@ -104,4 +104,19 @@ function extractPathToken(token: string) {
     }
 
     return `{{${token}}}`;
+}
+
+export function parseHashParams(str: string) {
+    let result = {};
+    if (str.includes('#')) {
+        let hashes = str.split('#')[1];
+        let pairs = hashes.split('&');
+        pairs.forEach(pair => {
+            if (pair.includes('=')) {
+                let arr = pair.split('=');
+                result[arr[0]] = arr[1];
+            }
+        });
+    }
+    return result;
 }

@@ -1,0 +1,29 @@
+<div class="container">
+    <h1 style="padding-top: 2em;">Connect</h1>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Account Name</th>
+            <th>Provider</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let con of (connections$ | async); let i = index;">
+            <th scope="row">{{i}}</th>
+            <td>{{con.title || con.id}}</td>
+            <td>{{con.provider || ('DROPBOX' | rsTitleCase)}}</td>
+            <td>
+                <a class="ion-close link" (click)="deleteAccount(con)"></a>
+                <a class="ion-refresh link" (click)="connectDropbox()"></a>
+            </td>
+            <td>{{con.connectedAt | date: 'medium'}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary" (click)="connectDropbox()">Connect To Dropbox</button>
+    <button class="btn btn-primary" disabled>Connect To Google</button>
+</div>

@@ -1,0 +1,24 @@
+<div class="container">
+    <h1 style="margin-top: 2em;">Import</h1>
+    <hr/>
+
+    <h3>Dropbox Browser</h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Account Name</th>
+            <th>Provider</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let con of (connections$ | async); let i = index;">
+            <th scope="row">{{i}}</th>
+            <td>{{con.title || con.id}}</td>
+            <td>{{con.provider || ('DROPBOX' | rsTitleCase)}}</td>
+            <td><a class="ion-ios-folder-outline link" (click)="loadDropboxFiles('', con)">  Select Location</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

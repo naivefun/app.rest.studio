@@ -102,10 +102,6 @@ function handleLoadRequestsSuccess(state: RequestsState, requests: DefaultHttpRe
     }
 
     let activeRequestId = state.activeRequestId;
-    if (!activeRequestId) {
-        activeRequestId = requests[0].id;
-    }
-
     return mergeState(state, { requests, activeRequestId, loadingRequests: false });
 }
 

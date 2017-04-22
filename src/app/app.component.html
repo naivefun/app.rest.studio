@@ -1,14 +1,21 @@
 <nav class="d-flex justify-content-between" style="background-color: #055db5;">
     <div>
-        <a class="link" style="font-weight: 300; font-size: 1.3em;">REST.Studio</a>
+        <a class="link larger b" [routerLink]="['/requests']">REST.Studio</a>
     </div>
     <div>
-        <a class="p-1 ion-social-chrome-outline link large" (click)="installExtension()" 
-            data-toggle="tooltip" data-placement="bottom" title="Chrome Extension"
-            *ngIf="extensionNotInstalled"></a>
-        <a class="p-1 ion-social-github large" target="github" 
-            data-toggle="tooltip" data-placement="bottom" title="Source"
-            href="https://github.com/naivefun/app.rest.studio"></a>
+        <a class="p-1 ion-android-cloud-outline link large"
+           data-toggle="tooltip" data-placement="bottom" title="Cloud Sync"
+           data-animation="false"
+           [routerLink]="['/connect']">
+        </a>
+        <a class="p-1 ion-social-chrome-outline link large" (click)="installExtension()"
+           data-toggle="tooltip" data-placement="bottom" title="Chrome Extension"
+           data-animation="false"
+           *ngIf="extensionNotInstalled"></a>
+        <a class="p-1 ion-social-github large" target="github"
+           data-toggle="tooltip" data-placement="bottom" title="Source"
+           data-animation="false"
+           href="https://github.com/naivefun/app.rest.studio"></a>
         <a class="p-1 ion-ios-information link large"></a>
     </div>
 </nav>

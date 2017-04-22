@@ -67,6 +67,8 @@ export function ensureRequest(request: DefaultHttpRequest): DefaultHttpRequest {
 export function bodyMode2TextMode(bodyMode: BodyMode): TextMode {
     switch (bodyMode) {
         case BodyMode.JSON:
+            return TextMode.JAVASCRIPT;
+        case BodyMode.HJSON:
             return TextMode.HJSON;
         case BodyMode.XML:
             return TextMode.XML;

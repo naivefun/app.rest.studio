@@ -1,52 +1,58 @@
 import {
     AfterViewInit,
-    Component, EventEmitter, HostBinding, Input,
-    OnChanges, Output, SimpleChanges, ViewChild
-}
-    from '@angular/core';
-import {
-    DefaultHttpRequest, HttpRequestParam
-}
-    from '../../../@model/http/http-request';
-import {
-    DefaultHttpResponse, ResponseView
-}
-    from '../../../@model/http/http-response';
-import * as _ from 'lodash';
-import { toAxiosOptions } from '../../../@utils/request.utils';
-import { generateSchema } from '../../../@utils/schema.utils';
-import {
-    isBinaryString, stringifyJson, stringifyYaml, tryParseAsObject
-}
-    from '../../../@utils/string.utils';
-import { TextMode } from '../../../@model/editor';
-import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostBinding,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges,
+    ViewChild
+} from '@angular/core';
 import * as Clipboard from 'clipboard';
 import * as dropbox from 'dropbox';
-import * as gapi from 'googleapis';
+import * as _ from 'lodash';
+import { TextMode } from '../../../@model/editor';
+import { DefaultHttpRequest, HttpRequestParam } from '../../../@model/http/http-request';
+import { DefaultHttpResponse, ResponseView } from '../../../@model/http/http-response';
+import { ConnectAccount } from '../../../@model/sync/connect-account';
+import { BaseComponent } from '../../../@shared/components/base.component';
+import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
+import { ConfigService } from '../../../@shared/config.service';
+import { CloudSyncProvider } from '../../../@shared/sync/dropbox.service';
+import { SyncService } from '../../../@shared/sync/sync.service';
+import { compressObject, sortKeys } from '../../../@utils/object.utils';
+import { toAxiosOptions } from '../../../@utils/request.utils';
+import { generateSchema } from '../../../@utils/schema.utils';
+import { stringifyJson, stringifyYaml, tryParseAsObject } from '../../../@utils/string.utils';
 
 declare var global_: any;
 @Component({
     selector: 'response-viewer',
     templateUrl: './response-viewer.component.html'
 })
-export class ResponseViewerComponent implements OnChanges, AfterViewInit {
+export class ResponseViewerComponent extends BaseComponent implements OnChanges, AfterViewInit {
     @Input() public id: string;
     @Input() public request: DefaultHttpRequest;
     @Input() public response: DefaultHttpResponse;
+    @Input() public connections: ConnectAccount[];
 
     @Output() public onClearResponse = new EventEmitter<string>();
 
     @ViewChild('editor')
     public editor: TextEditorComponent;
+    @ViewChild('cloudPathInput')
+    public cloudPathInput: ElementRef;
 
     public bodyString: string;
     public duration: number;
     public previewable: boolean; // TODO: html, image, downloadable
     public bodyTextMode: TextMode = TextMode.JAVASCRIPT;
-    public availableViews = [ResponseView.REQUEST];
+    public availableViews = [ ResponseView.REQUEST ];
     public view = ResponseView.REQUEST;
     public shareView = false;
+    public noOfConnections = 0;
     @HostBinding('class.full-screen')
     public fullScreen = false;
     private responseObject: Object;
@@ -54,26 +60,32 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
     private previewRequest: any;
     private schema: Object;
 
+    constructor(private config: ConfigService,
+                private syncService: SyncService) {
+        super();
+    }
+
     public ngAfterViewInit() {
         console.debug('dropbox', dropbox);
         return;
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
         console.debug('ResponseViewerComponent response changes', changes);
-        let request = changes['request'];
+        let request = changes[ 'request' ];
         if (request && request.currentValue) {
             this.toRequestPreview(request.currentValue);
         }
-        let response = changes['response'];
+        let response = changes[ 'response' ];
         if (response && response.currentValue) {
             if (this.response.timeSpan) {
                 this.duration = this.response.timeSpan.end - this.response.timeSpan.start;
             }
             this.view = this.response.view || ResponseView.BODY;
-            this.availableViews = [ResponseView.REQUEST, ResponseView.BODY, ResponseView.HEADER];
+            this.availableViews = [ ResponseView.REQUEST, ResponseView.BODY, ResponseView.HEADER ];
             this.bodyTextMode = this.guessMode(this.response.headers);
-            this.previewable = _.includes([TextMode.HTML], this.bodyTextMode); // TODO: support image and file download
+            this.previewable = _.includes([ TextMode.HTML ], this.bodyTextMode); // TODO: support image and file download
             let data = this.response.data;
             if (data)
                 try {
@@ -81,7 +93,7 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
                         this.responseObject = data;
                         this.bodyString = stringifyJson(data);
                     } else if (_.isString(data)) {
-                        if (_.includes([TextMode.JSON, TextMode.YAML], this.bodyTextMode)) {
+                        if (_.includes([ TextMode.JSON, TextMode.YAML ], this.bodyTextMode)) {
                             this.responseObject = tryParseAsObject(data);
                         }
 
@@ -103,6 +115,10 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
         } else {
             this.reset();
         }
+
+        this.onChange(changes, 'connections', value => {
+            this.noOfConnections = _.size(value);
+        });
 
         let copyable = new Clipboard('.copy');
     }
@@ -135,7 +151,7 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
             let result = {};
             params.forEach(param => {
                 if (!param.off) {
-                    result[param.key] = param.value;
+                    result[ param.key ] = param.value;
                 }
             });
             return result;
@@ -199,7 +215,7 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
                 return val;
             } else if (_.isObject(value)) {
                 _.keys(value).forEach(key => {
-                    value[key] = truncate(value[key]);
+                    value[ key ] = truncate(value[ key ]);
                 });
             }
             return value;
@@ -230,37 +246,54 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
     }
 
     public dropboxShare() {
-        let dbx = new dropbox({clientId: 'eeiyjdaf41jyfy0'});
-        let authUrl = dbx.getAuthenticationUrl('http://localhost:3000/assets/auth/dropbox.html');
-        let win = window.open(authUrl, 'auth');
-        global_.onReceiveDropboxToken = url => {
-            win.close();
-            alert(url);
-        };
+        return;
+    }
 
-        // let access_token = 'wHN2W8bN5aAAAAAAAAAADQ_apZXph-pZymF7diebrOp8SWOvsqOxIW7U9arWzHH4';
-        // let dbx = new dropbox({ accessToken: access_token });
-        // dbx.filesListFolder({path: '', recursive: false, include_media_info: false,
-        // include_deleted: false, include_has_explicit_shared_members: false})
-        //     .then(function(response) {
-        //         console.debug('response', response);
-        //     })
-        //     // NOTE: Need to explicitly specify type of error here, since TypeScript cannot infer it.
-        //     // The type is mentioned in the TSDoc for filesListFolder, so hovering over filesListFolder
-        //     // in a TS-equipped editor (e.g., Visual Studio Code) will show you that documentation.
-        //     .catch(function(error) {
-        //         console.error(error);
-        //     });
-        // dbx.filesUpload({path: '/app.rest.studio/hello.txt', contents: 'Hello world'})
-        //     .then(function(response) {
-        //         console.log(response);
-        //     })
-        //     .catch(function(error) {
-        //         console.error(error);
-        //     });
+    public saveToCloud() {
+        let path = this.cloudPathInput.nativeElement.value;
+        let provider = this.getProvider(this.request.defaultBindId);
+        if (provider) {
+            let content = JSON.stringify(sortKeys(compressObject(this.request, undefined, { method: 'GET' })));
+            alert(content);
+            provider.saveFile(path, content, 'application/json')
+                .then(result => {
+                    console.debug('save file result', result);
+                });
+        }
+    }
+
+    public downloadFromCloud() {
+        let path = this.cloudPathInput.nativeElement.value;
+        let provider = this.getProvider(this.request.defaultBindId);
+        if (provider) {
+            provider.getFile(path)
+                .then(result => {
+                    console.debug('download file result', result);
+                });
+        }
+    }
+
+    public generateSahredLink() {
+        let path = this.cloudPathInput.nativeElement.value;
+        let provider = this.getProvider(this.request.defaultBindId);
+        if (provider) {
+            provider.createSharedLink(path)
+                .then(url => {
+                    // TODO: persist to DB & Upload again
+                    this.request.sharedLink = url;
+                });
+        }
     }
 
     // endregion
+
+    private getProvider(id: string): CloudSyncProvider {
+        let conn = this.connections.find(con => con.id === id);
+        if (conn) {
+            let provider = this.syncService.connectProvider(conn.provider, conn.accessToken);
+            return provider;
+        }
+    }
 
     private getRenderObject() {
         return this.digestObject || this.responseObject;
@@ -276,7 +309,7 @@ export class ResponseViewerComponent implements OnChanges, AfterViewInit {
     private reset() {
         delete this.bodyString;
         delete this.duration;
-        this.availableViews = [ResponseView.REQUEST];
+        this.availableViews = [ ResponseView.REQUEST ];
         this.view = ResponseView.REQUEST;
     }
 

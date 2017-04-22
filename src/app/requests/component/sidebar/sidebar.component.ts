@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DefaultHttpRequest } from '../../../@model/http/http-request';
 import { State } from '../../../store/reducer';
 import { Store } from '@ngrx/store';
 import { CreateRequestAction, DeleteRequestAction, SelectRequestAction, UpRequestAction } from '../../store/action';
 import { OnPushComponent } from '../../../@shared/components/base.component';
 import * as _ from 'lodash';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'requests-sidebar',
@@ -67,7 +68,7 @@ import * as _ from 'lodash';
         li.active a {
             color: #055db5;
         }
-        
+
         li .title {
             flex-grow: 100;
         }
@@ -89,13 +90,26 @@ import * as _ from 'lodash';
         }
     `]
 })
-export class RequestsSidebarComponent extends OnPushComponent {
+export class RequestsSidebarComponent extends OnPushComponent implements OnChanges {
     @Input() public requests: DefaultHttpRequest[] = [];
     @Input() public activeRequestId: string;
 
     constructor(private store: Store<State>,
+                private router: Router,
                 private cd: ChangeDetectorRef) {
         super(cd);
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+        super.ngOnChanges(changes);
+        this.onChange(changes, 'requests', value => {
+            console.debug('requests', this.requests, 'id', this.activeRequestId);
+            if (!_.isEmpty(this.requests)) {
+                let requestId = this.activeRequestId || this.requests[0].id;
+                this.router.navigate([`/requests/${requestId}`]);
+                this.selectRequest(requestId);
+            }
+        });
     }
 
     public createRequest() {
@@ -115,5 +129,9 @@ export class RequestsSidebarComponent extends OnPushComponent {
     public upRequest(id: string, e: any) {
         if (e) e.stopPropagation();
         this.store.dispatch(new UpRequestAction(id));
+    }
+
+    public goToRequest(request: DefaultHttpRequest) {
+        this.router.navigate([`/requests/${request.id}`]);
     }
 }

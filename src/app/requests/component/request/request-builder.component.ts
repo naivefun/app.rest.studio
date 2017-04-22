@@ -1,18 +1,25 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import * as _ from 'lodash';
+import { TextMode } from '../../../@model/editor';
 import {
     BIN_BODY_MODES,
-    BODY_MODES, BodyMode, DefaultHttpRequest, EDITOR_BODY_MODES, FORM_BODY_MODES, HTTP_METHODS, HttpMethod,
+    BODY_MODES,
+    BodyMode,
+    DefaultHttpRequest,
+    EDITOR_BODY_MODES,
+    FORM_BODY_MODES,
+    HTTP_METHODS,
+    HttpMethod,
     ParamField
 } from '../../../@model/http/http-request';
-import * as _ from 'lodash';
-import { DefaultHttpClient } from '../../../@shared/http.service';
 import { bodyMode2TextMode } from '../../../@utils/request.utils';
-import { TextMode } from '../../../@model/editor';
+import { shortid } from '../../../@utils/string.utils';
+import { queryString2Object } from '../../../@utils/url.utils';
 
 @Component({
     selector: 'request-builder',
     templateUrl: './request-builder.component.html',
-    styles: [`
+    styles: [ `
         .section {
             padding: 1em;
         }
@@ -23,7 +30,7 @@ import { TextMode } from '../../../@model/editor';
             margin-bottom: .3em;
             padding-right: .5em;
         }
-    `]
+    ` ]
 })
 export class RequestBuilderComponent implements OnChanges {
 
@@ -42,7 +49,7 @@ export class RequestBuilderComponent implements OnChanges {
     private urlInput: ElementRef;
 
     public ngOnChanges(changes: SimpleChanges): void {
-        let request = changes['request'];
+        let request = changes[ 'request' ];
         if (request && request.currentValue) {
             this.reset(request.isFirstChange());
         }
@@ -56,11 +63,11 @@ export class RequestBuilderComponent implements OnChanges {
     }
 
     public disableField(field: string) {
-        console.debug('disable', field, ParamField[field]);
+        console.debug('disable', field, ParamField[ field ]);
     }
 
     public toggoleField(field: string) {
-        this.off[field] = !!!this.off[field];
+        this.off[ field ] = !!!this.off[ field ];
     }
 
     public run() {
@@ -98,6 +105,26 @@ export class RequestBuilderComponent implements OnChanges {
 
     public updateBody(text: string) {
         this._request.body = text;
+    }
+
+    public extractQuery() {
+        let queryObject = queryString2Object(this._request.url);
+        if (!_.isEmpty(queryObject)) {
+            _.forOwn(queryObject, (value, key) => {
+                if (value || key)
+                    this.request.queryParams.push({
+                        id: shortid(), off: false,
+                        key, value
+                    });
+            });
+
+            this.request.queryParams = _.clone(this.request.queryParams);
+            this.request.url = this.request.url.split('?')[ 0 ];
+        }
+    }
+
+    public selectHeaders() {
+        throw new Error('not implemented');
     }
 
     public emitChanges() {

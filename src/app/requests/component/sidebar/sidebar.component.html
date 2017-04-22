@@ -1,12 +1,12 @@
 <div class="flex">
-    <a class="flex-1 link btn-create-request ion-ios-copy-outline" (click)="createRequest()"> Import</a>
+    <a class="flex-1 link btn-create-request ion-ios-copy-outline" [routerLink]="['/import']"> Import</a>
     <a class="flex-1 link btn-create-request ion-plus" (click)="createRequest()"> Create</a>
 </div>
 <ul class="list-unstyled">
     <li *ngFor="let request of requests"
         class="link d-flex"
-        [routerLink]="['/requests', request.id]"
-        [ngClass]="{active: request.id === activeRequestId}">
+        [ngClass]="{active: request.id === activeRequestId}"
+        (click)="goToRequest(request)">
         <span class="title">{{request.title || request.url || request.id}}</span>
         <div class="menu">
             <a class="ion-close" (click)="deleteRequest(request.id, $event)"> </a>
