@@ -11,34 +11,34 @@ export function isNumber(input: any) {
 }
 
 export function compressObject(input: Object, options: CompressObjectOptions = new CompressObjectOptions(),
-    defaultValues?: Object) {
+                               defaultValues?: Object) {
     if (_.isObject) {
         let handler = (container, key, value) => {
             if (options.removeUnderscoreProperties && _.startsWith(key, '_')) {
-                delete container[key];
+                delete container[ key ];
             } else if (_.isObject(value)) {
                 if (options.removeEmptyObject && _.isEmpty(value)) {
-                    delete container[key];
+                    delete container[ key ];
                 }
             } else if (_.isArray(value)) {
                 if (options.removeEmptyArray && value.length === 0) {
-                    delete container[key];
+                    delete container[ key ];
                 }
             } else if (_.isBoolean(value)) {
                 if (options.removeFalse && !value) {
-                    delete container[key];
+                    delete container[ key ];
                 }
             } else if (value === undefined) {
                 if (options.removeUndefined) {
-                    delete container[key];
+                    delete container[ key ];
                 }
-            } else if (value === null || value === NaN) {
+            } else if (value === null || _.isNaN(value)) {
                 if (options.removeNull) {
-                    delete container[key];
+                    delete container[ key ];
                 }
             } else if (defaultValues && options.removeDefaultValues) {
-                if (defaultValues[key] === value) {
-                    delete container[key];
+                if (defaultValues[ key ] === value) {
+                    delete container[ key ];
                 }
             }
         };
@@ -50,10 +50,10 @@ export function compressObject(input: Object, options: CompressObjectOptions = n
 }
 
 export function walkObject(input: Object,
-    handler: (container: Object, key: string, value: any) => void) {
+                           handler: (container: Object, key: string, value: any) => void) {
     if (_.isObject(input)) {
         for (let key of Object.keys(input)) {
-            let value = input[key];
+            let value = input[ key ];
             if (_.isArray(value)) {
                 for (let item of value) {
                     walkObject(item, handler);
@@ -63,7 +63,7 @@ export function walkObject(input: Object,
             }
 
             if (handler) {
-                handler(input, key, input[key]);
+                handler(input, key, input[ key ]);
             }
         }
     }

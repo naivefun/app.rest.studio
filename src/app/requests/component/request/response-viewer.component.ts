@@ -1,6 +1,7 @@
 import {
     AfterViewInit,
-    Component, ElementRef,
+    Component,
+    ElementRef,
     EventEmitter,
     HostBinding,
     Input,
@@ -19,12 +20,12 @@ import { ConnectAccount } from '../../../@model/sync/connect-account';
 import { BaseComponent } from '../../../@shared/components/base.component';
 import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
 import { ConfigService } from '../../../@shared/config.service';
+import { CloudSyncProvider } from '../../../@shared/sync/dropbox.service';
 import { SyncService } from '../../../@shared/sync/sync.service';
+import { compressObject, sortKeys } from '../../../@utils/object.utils';
 import { toAxiosOptions } from '../../../@utils/request.utils';
 import { generateSchema } from '../../../@utils/schema.utils';
 import { stringifyJson, stringifyYaml, tryParseAsObject } from '../../../@utils/string.utils';
-import { CloudSyncProvider } from '../../../@shared/sync/dropbox.service';
-import { sortKeys, walkObject, compressObject } from "../../../@utils/object.utils";
 
 declare var global_: any;
 @Component({
@@ -48,7 +49,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
     public duration: number;
     public previewable: boolean; // TODO: html, image, downloadable
     public bodyTextMode: TextMode = TextMode.JAVASCRIPT;
-    public availableViews = [ResponseView.REQUEST];
+    public availableViews = [ ResponseView.REQUEST ];
     public view = ResponseView.REQUEST;
     public shareView = false;
     public noOfConnections = 0;
@@ -60,7 +61,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
     private schema: Object;
 
     constructor(private config: ConfigService,
-        private syncService: SyncService) {
+                private syncService: SyncService) {
         super();
     }
 
@@ -72,19 +73,19 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
     public ngOnChanges(changes: SimpleChanges): void {
         super.ngOnChanges(changes);
         console.debug('ResponseViewerComponent response changes', changes);
-        let request = changes['request'];
+        let request = changes[ 'request' ];
         if (request && request.currentValue) {
             this.toRequestPreview(request.currentValue);
         }
-        let response = changes['response'];
+        let response = changes[ 'response' ];
         if (response && response.currentValue) {
             if (this.response.timeSpan) {
                 this.duration = this.response.timeSpan.end - this.response.timeSpan.start;
             }
             this.view = this.response.view || ResponseView.BODY;
-            this.availableViews = [ResponseView.REQUEST, ResponseView.BODY, ResponseView.HEADER];
+            this.availableViews = [ ResponseView.REQUEST, ResponseView.BODY, ResponseView.HEADER ];
             this.bodyTextMode = this.guessMode(this.response.headers);
-            this.previewable = _.includes([TextMode.HTML], this.bodyTextMode); // TODO: support image and file download
+            this.previewable = _.includes([ TextMode.HTML ], this.bodyTextMode); // TODO: support image and file download
             let data = this.response.data;
             if (data)
                 try {
@@ -92,7 +93,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
                         this.responseObject = data;
                         this.bodyString = stringifyJson(data);
                     } else if (_.isString(data)) {
-                        if (_.includes([TextMode.JSON, TextMode.YAML], this.bodyTextMode)) {
+                        if (_.includes([ TextMode.JSON, TextMode.YAML ], this.bodyTextMode)) {
                             this.responseObject = tryParseAsObject(data);
                         }
 
@@ -150,7 +151,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
             let result = {};
             params.forEach(param => {
                 if (!param.off) {
-                    result[param.key] = param.value;
+                    result[ param.key ] = param.value;
                 }
             });
             return result;
@@ -214,7 +215,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
                 return val;
             } else if (_.isObject(value)) {
                 _.keys(value).forEach(key => {
-                    value[key] = truncate(value[key]);
+                    value[ key ] = truncate(value[ key ]);
                 });
             }
             return value;
@@ -252,7 +253,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
         let path = this.cloudPathInput.nativeElement.value;
         let provider = this.getProvider(this.request.defaultBindId);
         if (provider) {
-            let content = JSON.stringify(sortKeys(compressObject(this.request, undefined, {method: 'GET'})));
+            let content = JSON.stringify(sortKeys(compressObject(this.request, undefined, { method: 'GET' })));
             alert(content);
             provider.saveFile(path, content, 'application/json')
                 .then(result => {
@@ -308,7 +309,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
     private reset() {
         delete this.bodyString;
         delete this.duration;
-        this.availableViews = [ResponseView.REQUEST];
+        this.availableViews = [ ResponseView.REQUEST ];
         this.view = ResponseView.REQUEST;
     }
 
