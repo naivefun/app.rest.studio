@@ -1,15 +1,15 @@
-import { shortid } from '../../@utils/string.utils';
+import { shortid } from '../@utils/string.utils';
 
-export class ConnectAccount {
+export class SyncProviderAccount {
     public id: string;
-    public provider: ConnectProvider;
+    public provider: SyncProvider;
     public accessToken: string;
     public title: string;
     public uid: string;
     public accountId: string;
     public connectedAt: number;
 
-    constructor(provider: ConnectProvider, accessToken: string, title: string = undefined) {
+    constructor(provider: SyncProvider, accessToken: string, title: string = undefined) {
         this.id = shortid();
         this.provider = provider;
         this.accessToken = accessToken;
@@ -18,9 +18,11 @@ export class ConnectAccount {
     }
 }
 
-export enum ConnectProvider {
+export enum SyncProvider {
     DROPBOX,
-    GOOGLE_DRIVE
+    GOOGLE_DRIVE,
+    BAIDU,
+    ONE_DRIVE
 }
 
 export class CloudFile {
@@ -36,4 +38,14 @@ export class CloudFile {
         this.title = title;
         this.readOnly = readOnly;
     }
+}
+
+export interface TokenObject {
+    accessToken: string;
+    uid: string;
+    accountId: string;
+}
+
+export interface AccountObject {
+    displayName: string;
 }

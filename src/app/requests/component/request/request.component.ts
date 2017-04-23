@@ -12,7 +12,7 @@ import { getConnections, getRequestsActiveRequest, getRequestsActiveResponse } f
 import { DefaultHttpResponse } from '../../../@model/http/http-response';
 import * as _ from 'lodash';
 import { DefaultHttpClient } from '../../../@shared/http.service';
-import { ConnectAccount } from '../../../@model/sync/connect-account';
+import { SyncProviderAccount } from '../../../@model/sync';
 
 @Component({
     selector: 'requests-request',
@@ -22,7 +22,7 @@ export class RequestsRequestComponent implements OnInit {
     public id: string;
     public request$: Observable<DefaultHttpRequest>;
     public response$: Observable<DefaultHttpResponse>;
-    public connections$: Observable<ConnectAccount[]>;
+    public connections$: Observable<SyncProviderAccount[]>;
 
     public request: DefaultHttpRequest;
 

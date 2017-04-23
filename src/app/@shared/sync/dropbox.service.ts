@@ -1,22 +1,24 @@
 import axios from 'axios';
 import * as Dropbox from 'dropbox';
-import { CloudFile } from '../../@model/sync/connect-account';
+import { AccountObject, CloudFile, TokenObject } from '../../@model/sync';
 import { parseHashParams } from '../../@utils/url.utils';
 
+// TODO: create types instead of `any`
 export interface CloudSyncProvider {
     authUrl(redirectUri: string): string;
     extractAccessToken(url: string): string;
-    extractIdentity(url: string): string;
-    isActive(): Promise<boolean>;
+    parseAuthToken(url: string): TokenObject;
+    isActive(): boolean; // access token is present
     saveFile(path: string, content: string, mimeType: string): Promise<any>;
     getFile(path: string): Promise<string>;
     createSharedLink(path: string): Promise<string>;
     listFiles(path: string): Promise<CloudFile[]>;
-    getAccount();
+    getAccount(): Promise<AccountObject>;
 }
 
 export class DropboxSyncProvider implements CloudSyncProvider {
     private endpointPrefix: string = 'https://api.dropboxapi.com/2';
+    private contentPrefix: string = 'https://content.dropboxapi.com/2';
     private dpx: any;
     private clientId: string;
     private accessToken: string;
@@ -32,29 +34,30 @@ export class DropboxSyncProvider implements CloudSyncProvider {
         return authUrl;
     }
 
-    public extractIdentity(url: string): any {
+    public parseAuthToken(url: string): TokenObject {
         let parsed: any = parseHashParams(url);
         this.accessToken = parsed[ 'access_token' ];
         this.createInstance();
-        return parsed;
+        return {
+            uid: parsed[ 'uid' ],
+            accountId: parsed[ 'account_id' ],
+            accessToken: this.accessToken
+        };
     }
 
     public extractAccessToken(url: string): string {
-        let parsed: any = this.extractIdentity(url);
+        let parsed: any = this.parseAuthToken(url);
         let accessToken = parsed[ 'access_token' ];
         return accessToken;
     }
 
-    public isActive(): Promise<Boolean> {
-        return Promise.resolve(true);
+    public isActive(): boolean {
+        return !!this.accessToken;
     }
 
     public saveFile(path: string, content: string, mimeType: string): Promise<any> {
-        let url = this.url('/files/upload', true);
-        return this.call(url, 'post', content, {
-            'Content-Type': 'application/octet-stream',
-            'Dropbox-API-Arg': JSON.stringify({ path, mode: { '.tag': 'overwrite' } })
-        });
+        let url = this.contentUrl('/files/upload');
+        return this.callContent(url, content, { path, mode: { '.tag': 'overwrite' } });
     }
 
     public createSharedLink(path: string): Promise<string> {
@@ -67,10 +70,8 @@ export class DropboxSyncProvider implements CloudSyncProvider {
     }
 
     public getFile(path: string): Promise<string> {
-        let url = this.url('/files/download', true);
-        return this.call(url, 'post', undefined, {
-            'Dropbox-API-Arg': JSON.stringify({ path })
-        });
+        let url = this.contentUrl('/files/download');
+        return this.callContent(url, undefined, { path });
     }
 
     public listFiles(path: string): Promise<CloudFile[]> {
@@ -93,12 +94,14 @@ export class DropboxSyncProvider implements CloudSyncProvider {
             });
     }
 
-    public getAccount() {
+    public getAccount(): Promise<AccountObject> {
         let url = this.url('/users/get_current_account');
         return this.call(url, 'post')
             .then(account => {
                 console.debug('current account', account);
-                return account;
+                return {
+                    displayName: account.name.display_name
+                };
             });
     }
 
@@ -114,11 +117,19 @@ export class DropboxSyncProvider implements CloudSyncProvider {
             .then(response => response.data));
     }
 
-    private url(path: string, content = false) {
-        if (content) {
-            return 'https://content.dropboxapi.com/2' + path;
-        }
+    private callContent(url: string, content: any, apiArg: any): Promise<any> {
+        return this.call(url, 'post', content, {
+            'Content-Type': 'application/octet-stream',
+            'Dropbox-API-Arg': JSON.stringify(apiArg)
+        });
+    }
+
+    private url(path: string) {
         return `${this.endpointPrefix}${path}`;
+    }
+
+    private contentUrl(path: string) {
+        return `${this.contentPrefix}${path}`;
     }
 
     private createInstance() {

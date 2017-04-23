@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 import { TextMode } from '../../../@model/editor';
 import { DefaultHttpRequest, HttpRequestParam } from '../../../@model/http/http-request';
 import { DefaultHttpResponse, ResponseView } from '../../../@model/http/http-response';
-import { ConnectAccount } from '../../../@model/sync/connect-account';
+import { SyncProviderAccount } from '../../../@model/sync';
 import { BaseComponent } from '../../../@shared/components/base.component';
 import { TextEditorComponent } from '../../../@shared/components/text-editor.component';
 import { ConfigService } from '../../../@shared/config.service';
@@ -36,7 +36,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
     @Input() public id: string;
     @Input() public request: DefaultHttpRequest;
     @Input() public response: DefaultHttpResponse;
-    @Input() public connections: ConnectAccount[];
+    @Input() public connections: SyncProviderAccount[];
 
     @Output() public onClearResponse = new EventEmitter<string>();
 
@@ -290,7 +290,7 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
     private getProvider(id: string): CloudSyncProvider {
         let conn = this.connections.find(con => con.id === id);
         if (conn) {
-            let provider = this.syncService.connectProvider(conn.provider, conn.accessToken);
+            let provider = this.syncService.syncProvider(conn.provider, conn.accessToken);
             return provider;
         }
     }
