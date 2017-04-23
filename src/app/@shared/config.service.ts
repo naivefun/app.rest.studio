@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DbService, KEYS, DB } from './db.service';
-import { ConnectAccount } from '../@model/sync/connect-account';
+import { SyncProviderAccount } from '../@model/sync';
 import * as _ from 'lodash';
 
 @Injectable()
@@ -43,13 +43,7 @@ export class ConfigService {
             });
     }
 
-    public getConnectedAccount(id: string) {
-        if (this.localConfig) {
-            return this.localConfig.connectedAccounts.find(act => act.id === id);
-        }
-    }
-
-    public addConnectedAccount(account: ConnectAccount) {
+    public addSyncAccount(account: SyncProviderAccount) {
         return this.getConfig(false)
             .then((config: LocalConfig) => {
                 // remove existing account with same uid
@@ -61,7 +55,7 @@ export class ConfigService {
             });
     }
 
-    public deleteConnectedAccount(account: ConnectAccount) {
+    public deleteSyncAccount(account: SyncProviderAccount) {
         return this.getConfig(false)
             .then((config: LocalConfig) => {
                 config.connectedAccounts = config.connectedAccounts
@@ -74,7 +68,7 @@ export class ConfigService {
 
 export class LocalConfig {
     public id: string;
-    public connectedAccounts: ConnectAccount[];
+    public connectedAccounts: SyncProviderAccount[];
 
     constructor() {
         this.id = KEYS.LOCAL_CONFIG;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConnectAccount, ConnectProvider } from '../../@model/sync/connect-account';
+import { SyncProviderAccount, SyncProvider } from '../../@model/sync';
 import { ConfigService } from '../config.service';
 import { CloudSyncProvider, DropboxSyncProvider } from './dropbox.service';
 
@@ -9,24 +9,24 @@ export class SyncService {
     constructor(private config: ConfigService) {
     }
 
-    public connectProvider(provider: ConnectProvider, accessToken?: string): CloudSyncProvider {
+    public syncProvider(provider: SyncProvider, accessToken?: string): CloudSyncProvider {
         switch (provider) {
-            case ConnectProvider.DROPBOX:
+            case SyncProvider.DROPBOX:
             default:
                 return new DropboxSyncProvider(this.config.dropboxClientId, accessToken);
         }
     }
 
-    public redirectUri(provider: ConnectProvider): string {
+    public redirectUri(provider: SyncProvider): string {
         switch (provider) {
-            case ConnectProvider.DROPBOX:
+            case SyncProvider.DROPBOX:
             default:
                 return this.config.dropboxRedirectUri;
         }
     }
 
-    public persistConnection(account: ConnectAccount) {
-        return this.config.addConnectedAccount(account);
+    public persistConnection(syncAccount: SyncProviderAccount) {
+        return this.config.addSyncAccount(syncAccount);
     }
 
     public disconnect(id: string) {

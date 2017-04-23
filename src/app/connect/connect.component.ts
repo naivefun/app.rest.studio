@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { State } from '../store/reducer';
 import { Observable } from 'rxjs/Observable';
-import { ConnectAccount, ConnectProvider } from '../@model/sync/connect-account';
+import { SyncProviderAccount, SyncProvider } from '../@model/sync';
 import { getConnections } from '../store/selector';
 import { SyncService } from '../@shared/sync/sync.service';
 import { ConfigService } from '../@shared/config.service';
@@ -16,8 +16,8 @@ declare const global_: any;
     templateUrl: './connect.component.html'
 })
 export class ConnectComponent {
-    public connections$: Observable<ConnectAccount[]>;
-    public connections: ConnectAccount[];
+    public connections$: Observable<SyncProviderAccount[]>;
+    public connections: SyncProviderAccount[];
 
     constructor(public config: ConfigService,
                 private syncService: SyncService,
@@ -25,25 +25,24 @@ export class ConnectComponent {
         this.connections$ = store.select(getConnections);
     }
 
+    // TODO: abstract for all providers
     public connectDropbox() {
-        let connectProvider = this.syncService.connectProvider(ConnectProvider.DROPBOX);
-        let authUrl = connectProvider.authUrl(this.syncService.redirectUri(ConnectProvider.DROPBOX));
+        let syncProvider = this.syncService.syncProvider(SyncProvider.DROPBOX);
+        let authUrl = syncProvider.authUrl(this.syncService.redirectUri(SyncProvider.DROPBOX));
 
         let win = window.open(authUrl, 'auth');
-        global_['onReceiveDropboxToken'] = url => {
+        global_[ 'onReceiveDropboxToken' ] = url => {
             win.close();
             console.debug('dropbox url', url);
 
-            let identity: any = connectProvider.extractIdentity(url);
-            let connectAccount = new ConnectAccount(ConnectProvider.DROPBOX, identity['access_token']);
-            connectAccount.accountId = identity['account_id'];
-            connectAccount.id = connectAccount.uid = identity['uid'];
-            connectProvider.getAccount()
+            let tokenObject = syncProvider.parseAuthToken(url);
+            let syncAccount = new SyncProviderAccount(SyncProvider.DROPBOX, tokenObject.accessToken);
+            syncAccount.accountId = tokenObject.accountId;
+            syncAccount.id = syncAccount.uid = tokenObject.uid;
+            syncProvider.getAccount()
                 .then(account => {
-                    console.debug('account', account);
-                    console.debug('saving account', connectAccount);
-                    connectAccount.title = account.name.display_name;
-                    this.syncService.persistConnection(connectAccount)
+                    syncAccount.title = account.displayName;
+                    this.syncService.persistConnection(syncAccount)
                         .then(result => {
                             // show actual connected accounts for choose
                             console.debug('persist connection result', result);
@@ -53,7 +52,7 @@ export class ConnectComponent {
         };
     }
 
-    public deleteAccount(con: ConnectAccount) {
-        this.config.deleteConnectedAccount(con);
+    public deleteAccount(con: SyncProviderAccount) {
+        this.config.deleteSyncAccount(con);
     }
 }
