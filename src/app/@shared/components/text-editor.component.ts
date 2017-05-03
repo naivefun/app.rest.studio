@@ -49,6 +49,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
     @Input() public text: string;
 
     @Output() public onTextChanged = new EventEmitter<TextObject>();
+    @Output() public onBlur = new EventEmitter<TextObject>();
     @Output() public onFullScreenChanged = new EventEmitter<any>();
 
     private isInitializing: boolean;
@@ -71,7 +72,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
     public ngOnChanges(changes: SimpleChanges): void {
         console.debug('text editor change detected', changes);
 
-        let change: SimpleChange = changes['text'];
+        let change: SimpleChange = changes[ 'text' ];
         if (change && (change.isFirstChange() || this.observeText)) {
             this.setText(this.text);
             if (change.isFirstChange()) this.isTextInitialized = true;
@@ -90,7 +91,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
                 this.session.setUseWrapMode(value);
         });
 
-        change = changes['lineNumbers'];
+        change = changes[ 'lineNumbers' ];
         if (change) {
             if (this.editor) {
                 console.debug('updating lineNumbers', change.currentValue);
@@ -114,9 +115,10 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
         // ace.config.set('workerPath', 'assets/js/ace');
 
         ace.require('ace/ext/language_tools');
+        ace.require('ace/ext/searchbox');
         let editor = this.editor = ace.edit(this.id), session = this.session = editor.getSession();
         editor.renderer.setShowGutter(this.lineNumbers);
-        editor.setTheme('ace/theme/github');
+        editor.setTheme('ace/theme/xcode');
         editor.setOptions({
             enableSnippets: true,
             // enableLinking: true,
@@ -124,11 +126,13 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
             enableBasicAutocompletion: true,
             maxLines: this.maxLines,
             minLines: this.minLines,
-            fontFamily: '"SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
+            fontFamily: '"DejaVu Sans Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
             fontSize: '12px'
         });
         editor.on('blur', () => {
             let text = this.getText();
+            this.onBlur.emit(text);
+
             let isJSON = !!parseJson(text);
             if (text !== this.previousValue) {
                 if (this.objectMode) {

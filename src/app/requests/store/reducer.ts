@@ -47,7 +47,7 @@ function handleUpdateRequest(state: RequestsState, request: DefaultHttpRequest) 
     if (request) {
         requests = requests.map(req => {
             if (req.id === request.id) {
-                return request;
+                return _.cloneDeep(request);
             }
 
             return req;

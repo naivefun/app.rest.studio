@@ -13,12 +13,14 @@
             </div>
             <div class="col-md-2 icons d-flex justify-content-center">
                 <a class="ion-android-checkmark-circle link" [ngClass]="{off: param.off}"
-                    (click)="param.off = !!!param.off"></a>
+                   (click)="param.off = !!!param.off"></a>
                 <a class="ion-ios-copy-outline link" (click)="clone(param)"></a>
                 <a class="ion-close link" (click)="delete(param)"></a>
             </div>
         </div>
     </div>
     <input type="text" class="form-control" placeholder="enter to add parameter"
+           (keydown.Tab)="addWithTab($event)"
+           (keyup.esc)="add($event, true)"
            (keyup.enter)="add($event)"/>
 </div>

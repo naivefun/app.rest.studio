@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import * as _ from 'lodash';
 import * as PouchDB from 'pouchdb';
 import { Observable } from 'rxjs';
-import * as _ from 'lodash';
+import { shortid } from '../@utils/string.utils';
+import { AlertService } from './alert.service';
 
 export const DB = {
     MAIN: 'main',
@@ -16,23 +18,27 @@ export const KEYS = {
 export class DbService {
     private _db = {};
 
+    constructor(private alertService: AlertService) {
+    }
+
     public get(id: string, db = DB.MAIN): Observable<any> {
         return Observable.fromPromise(this.getPromise(id, db));
     }
 
+    /**
+     * never throws error
+     * @param id
+     * @param db
+     * @return either object or null
+     */
     public getPromise(id: string, db = DB.MAIN): Promise<any> {
         return this.db(db).get(id)
             .then(result => {
-                console.debug('pouch get object result', result);
+                console.debug('[db] pouch get object result', result);
                 return result;
             })
             .catch(error => {
-                console.error('pouch get object error', error);
-                if (error.status === 404) {
-                    return null;
-                }
-
-                throw error;
+                return null;
             });
     }
 
@@ -52,35 +58,37 @@ export class DbService {
         return Observable.fromPromise(this.savePromise(object, db, id));
     }
 
-    public savePromise(object: any, db: string, id: string = null): Promise<any> {
+    public savePromise(object: any, db: string, id?: string): Promise<any> {
         if (!_.isObject(object))
-            throw new Error('DB accepts object only');
+            throw new Error('[db] DB accepts object only');
 
-        id = id || object.id || object._id;
-        if (!id) {
-            return this.db(db).post(object)
-                .then(result => {
-                    return object;
-                }); // post will generate id
-        } else {
-            return this.getPromise(id, db)
-                .then(doc => {
-                    if (doc) {
-                        object._rev = doc._rev;
-                        object._id = id;
-                    }
-                    return this.db(db).put(object);
-                })
-                .then(result => {
-                    object._rev = result.rev;
-                    return object;
-                })
-                .catch(error => {
-                    console.error('save/get object error:', error);
-                    object._id = id;
-                    return this.db(db).put(object);
-                });
-        }
+        id = id // explicit id
+            || object._id // respect existing id
+            || object.id // if refresh object without _id
+            || shortid(); // create new id
+        object._id = id; // ensure _id is set for pouchdb
+        console.debug('[db] saving object', object);
+        return this.getPromise(id, db)
+            .then(doc => {
+                if (doc) {
+                    object._rev = doc._rev; // set _rev to avoid conflicts
+                } else {
+                    delete object._rev;
+                }
+                return this.db(db).put(object);
+            })
+            // save success
+            .then(result => {
+                object._rev = result.rev; // new revision
+                console.debug('[db] object is saved', object);
+                return object;
+            })
+            // save error
+            .catch(error => {
+                console.error('[db] save/get object error:', error);
+                this.alertService.error(error.message);
+                throw error;
+            });
     }
 
     public delete(id: string, db: string) {

@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { HttpRequestParam } from '../../../../@model/http/http-request';
 import * as _ from 'lodash';
+import { BaseComponent } from '../../../../@shared/components/base.component';
 
 @Component({
     selector: 'request-param-group',
     templateUrl: './param-group.component.html',
-    styles: [`
+    styles: [ `
         .off input {
             color: #ddd;
             font-weight: 300;
@@ -23,13 +24,28 @@ import * as _ from 'lodash';
         .icons a.off:hover {
             color: #999;
         }
-    `]
+    ` ]
 })
-export class ParamGroupComponent {
-    @Input() public paramGroup: HttpRequestParam[];
+export class ParamGroupComponent extends BaseComponent {
     @Output() public paramsUpdated = new EventEmitter<HttpRequestParam[]>();
+    private _paramGroup: HttpRequestParam[] = [];
+
+    get paramGroup() {
+        return this._paramGroup;
+    }
+
+    @Input()
+    set paramGroup(paramGroup: HttpRequestParam[]) {
+        this._paramGroup = paramGroup || [];
+    }
+
+    public addWithTab(e) {
+        alert('tab ' + e.target.value);
+    }
 
     public add(e, cancel = false) {
+        console.debug('blur', e);
+
         if (!cancel) {
             let key = _.trim(e.target.value);
             if (key) {

@@ -1,0 +1,58 @@
+<div id="{{dialogId}}" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cloud File Picker</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-end p-2">
+                    <div class="mr-auto">
+                        <path-selector [path]="selectedPath"
+                                       (onPathSelected)="onMenuPathSelected($event)"></path-selector>
+                        <!--<div><span>{{historyIndex}}</span>: {{pathHistory | json}}</div>-->
+                    </div>
+                    <div>
+                        <a class="ion-arrow-left-a link p-2 larger" (click)="back()" *ngIf="historyIndex"></a>
+                        <a class="ion-arrow-right-a link p-2 larger" (click)="forward()"
+                           *ngIf="pathHistory?.length > historyIndex + 1"></a>
+                        <a class="ion-refresh p-2 larger" (click)="reload()"> </a>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Path</th>
+                        <th class="text-center" style="width: 6em;">Select</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let file of files">
+                        <td *ngIf="!file.isFolder">
+                            <span class="ion-document"> {{file.pathDisplay | rsPathFilename}}</span>
+                        </td>
+                        <td *ngIf="file.isFolder">
+                            <a class="link ion-folder" (click)="listFiles(file.pathDisplay)">
+                                {{file.pathDisplay | rsPathFilename}}
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-info link" (click)="selectPath(file.pathDisplay)"
+                                    *ngIf="!file.isFolder || !fileOnly">Select
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer" *ngIf="!fileOnly">
+                <button type="button" class="btn btn-sm link btn-secondary" (click)="createFolder()">Create Folder
+                </button>
+                <button type="button" class="btn btn-sm link btn-info" (click)="selectPath()">Select Current Folder
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

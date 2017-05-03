@@ -1,7 +1,7 @@
-import { BodyMode, DefaultFileReference, DefaultHttpRequest, HttpRequestParam } from '../@model/http/http-request';
-import { TextMode } from '../@model/editor';
 import { AxiosRequestConfig } from 'axios';
 import * as _ from 'lodash';
+import { TextMode } from '../@model/editor';
+import { BodyMode, DefaultFileReference, DefaultHttpRequest, HttpRequestParam } from '../@model/http/http-request';
 import { object2QueryString } from './url.utils';
 
 const APP_PREFIX = 'application';
@@ -53,7 +53,7 @@ export function requestParamsToObject(params: HttpRequestParam[]): Object {
         if (!param.off) {
             let key = _.trim(param.key);
             if (key)
-                result[param.key] = param.value;
+                result[ param.key ] = param.value;
         }
     });
     return result;
@@ -90,4 +90,12 @@ export function bodyMode2ContentType(bodyMode: BodyMode) {
         default:
             return `${APP_PREFIX}/json`;
     }
+}
+
+export function compressForSync() {
+    return;
+}
+
+export function mergeFromSync() {
+    return;
 }

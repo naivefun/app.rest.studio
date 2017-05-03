@@ -3,6 +3,7 @@
         <a *ngFor="let v of availableViews"
            class="link option" [ngClass]="{on: view === v}"
            (click)="switchView(v)">{{v | rsTitleCase}}</a>
+        <!--<input type="text" placeholder="search" (keydown.enter)="filterJson($event)"/>-->
     </div>
     <div class="flex-1 code" *ngIf="response">
         <span *ngIf="duration">{{duration}}ms</span>
@@ -10,7 +11,6 @@
         <span>{{response.statusText}}</span>
     </div>
     <div>
-        <a class="ion-eye link p-2" title="preview" *ngIf="previewable"> </a>
         <div class="btn-group">
             <a class="ion-arrow-expand large link p-2" title="full screen" (click)="toggleFullScreen()"> </a>
             <a class="link ion-grid large p-2" data-toggle="dropdown">
@@ -52,48 +52,70 @@
         </div>
         <hr/>
 
-        <pre class="smaller" [innerHtml]="(previewRequest || {}) | rsYaml | rsCode: 'yaml'" *ngIf="!shareView"></pre>
-        <div *ngIf="shareView">
+        <pre class="smaller" [innerHtml]="(previewRequest || {}) | rsYaml | rsCode: 'yaml'" *ngIf="shareView"></pre>
+        <div *ngIf="!shareView">
             <div class="p-2 d-flex justify-content-end">
-                <a class="link option on smaller">Pretty</a>
             </div>
             <textarea [id]="'share_' + id" class="form-control smaller code"
-                      rows="20">{{request | rsSortKeys | rsJson}}</textarea>
+                      rows="10">{{request | rsSortKeys | rsJson}}</textarea>
 
-            <div id="xxx" class="p-2">
-                <a class="btn btn-secondary btn-sm link copy" (click)="copyShare()"
-                   [attr.data-clipboard-target]="'#share_' + id">Copy</a>
-                <a class="btn btn-secondary btn-sm link" href="data:text/html,HelloWorld!" download="something.html">Download</a>
-                <a class="btn btn-secondary btn-sm link" (click)="saveToCloud()" *ngIf="noOfConnections <= 1">
-                    Save To Cloud
-                </a>
+            <div class="d-flex justify-content-end">
+                <div class="mr-auto p-2">
+                    <a class="btn btn-secondary btn-sm link copy" (click)="copyShare()"
+                       [attr.data-clipboard-target]="'#share_' + id">Copy</a>
+                    <!--<a class="btn btn-secondary btn-sm link" href="data:text/html,HelloWorld!" download="something.html">Download</a>-->
+                </div>
+                <div class="p-2">
+                    <button class="btn btn-info btn-sm"
+                            (click)="creatingMapping = !creatingMapping"
+                            *ngIf="noOfConnections > 0">
+                        Create Cloud Mapping
+                    </button>
+                </div>
             </div>
 
-            <div class="p-2" *ngIf="request && noOfConnections > 0">
-                <select [(ngModel)]="request.defaultBindId">
-                    <option *ngFor="let con of connections" [value]="con.id">{{con.title}}</option>
-                </select>
-
-                <input class="form-control" [value]="request.sharedLink" *ngIf="request.sharedLink"/>
-                <input #cloudPathInput class="form-control" placeholder="cloud storage path"
-                       value="/app.rest.studio/requests/request[{{request.id}}].json"/>
-                <button class="btn btn-sm btn-info" (click)="saveToCloud()">Save</button>
-                <button class="btn btn-sm btn-info" (click)="generateSahredLink()">Generate Shared Link</button>
-                <button class="btn btn-sm btn-info" (click)="downloadFromCloud()">Download From Cloud</button>
+            <div class="p-2" *ngIf="defaultMapping">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Cloud Path</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="larger"><span class="ion-social-dropbox-outline p-2"></span></td>
+                        <td class="p-2">{{defaultMapping.pathDisplay}}</td>
+                        <td class="larger">
+                            <status-button [clz]="'ion-ios-cloud-download p-2'"
+                                           [loading]="downloading"
+                                           (onClick)="download()"></status-button>
+                            <status-button [clz]="'ion-ios-cloud-upload p-2'"
+                                           [loading]="uploading"
+                                           (onClick)="upload()"></status-button>
+                            <a class="ion-close p-2" (click)="deleteMapping()"> </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
+            <div *ngIf="creatingMapping && request">
+                <hr/>
+                <div class="p-2">
+                    <cloud-mapping [requestId]="request.id" [syncAccounts]="syncAccounts"
+                                   [mapping]="request.cloudMapping"
+                                   (onSave)="saveMapping($event)"
+                                   (onMappingUpdated)="updateMapping($event)"></cloud-mapping>
 
-            <!--            <div class="d-flex p-2">
-                            <div class="p-2 m-2">
-                                <h1 class="ion-social-dropbox p-2 m-2" style="font-size: 6em;"></h1>
-                            </div>
-                            <div>
-                                <h3>Connect Dropbox</h3>
-                                <p>Connect dropbox to store and share requests with collaborators</p>
-                                <button class="btn btn-info link">Connect</button>
-                            </div>
-                        </div>-->
+                    <!--<cloud-file-picker [defaultPath]="''" [syncAccounts]="connections"-->
+                    <!--(onPathSelected)="onSyncPathUpdated($event)"></cloud-file-picker>-->
+                </div>
+            </div>
         </div>
+
+        <!--<pre *ngIf="request">{{request | rsYaml}}</pre>-->
     </div>
     <div class="flex flex-1 p-2" *ngSwitchCase="'schema'">
         <pre class="flex-1" [innerHtml]="(schema || {}) | rsYaml | rsCode: 'yaml'"></pre>

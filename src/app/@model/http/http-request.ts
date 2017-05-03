@@ -1,14 +1,18 @@
 import { shortid } from '../../@utils/string.utils';
 import { DefaultPair } from '../pair';
+import { CloudMapping, SyncObjectType } from '../sync';
+import { compressObject } from '../../@utils/object.utils';
 
 export class DefaultHttpRequest implements HttpRequest {
 
     public static defaultRequest() {
         // return new DefaultHttpRequest('http://www.mocky.io/v2/58e03f0e1000008914cc1603');
-        return new DefaultHttpRequest('http://localhost:3000/');
+        return new DefaultHttpRequest('http://');
     }
 
     public id: string;
+    public syncType: SyncObjectType = SyncObjectType.REQUEST;
+
     public title: string;
     public description: string;
     public url: string;
@@ -27,6 +31,8 @@ export class DefaultHttpRequest implements HttpRequest {
     public files: DefaultFileReference[]; // if form uploads
     public body: string;
 
+    public cloudMapping: CloudMapping;
+    public extraMappings: CloudMapping[]; // if any
     public disabledFields: ParamField[] = [];
     public defaultBindId: string;
     public sharedLink: string;
@@ -124,5 +130,17 @@ export interface FileReference {
 }
 
 export class DefaultFileReference implements FileReference {
+
+}
+
+export function mergeCloudRequest(local: DefaultHttpRequest, remote: DefaultHttpRequest) {
+    return local;
+}
+
+export function toCloudRequest(request: DefaultHttpRequest) {
+    return compressObject(request);
+}
+
+export function updateRequestProperty(request: DefaultHttpRequest, key: string, value: any) {
 
 }

@@ -6,15 +6,32 @@ export function sortKeys(input: Object) {
     }
 }
 
+export function sortByKeys(input: Object, keys: string[]) {
+    let copy = _.cloneDeep(input);
+    let result = {};
+    keys.forEach(key => {
+        if (!_.isUndefined(copy[ key ])) {
+            result[ key ] = _.cloneDeep(copy[ key ]);
+            delete copy[ key ];
+        }
+    });
+    Object.keys(copy).forEach(key => {
+        result[ key ] = _.cloneDeep(copy[ key ]);
+    });
+    return result;
+}
+
 export function isNumber(input: any) {
     return _.isNumber(input) && !_.isNaN(input);
 }
 
 export function compressObject(input: Object, options: CompressObjectOptions = new CompressObjectOptions(),
-                               defaultValues?: Object) {
+                               keysData?: CompressKeysData) {
     if (_.isObject) {
         let handler = (container, key, value) => {
-            if (options.removeUnderscoreProperties && _.startsWith(key, '_')) {
+            if (keysData && _.includes(keysData.keysToRemove, key)) {
+                delete container[ key ];
+            } else if (options.removeUnderscoreProperties && _.startsWith(key, '_')) {
                 delete container[ key ];
             } else if (_.isObject(value)) {
                 if (options.removeEmptyObject && _.isEmpty(value)) {
@@ -36,8 +53,8 @@ export function compressObject(input: Object, options: CompressObjectOptions = n
                 if (options.removeNull) {
                     delete container[ key ];
                 }
-            } else if (defaultValues && options.removeDefaultValues) {
-                if (defaultValues[ key ] === value) {
+            } else if (keysData && keysData.defaultValues && options.removeDefaultValues) {
+                if (keysData.defaultValues[ key ] === value) {
                     delete container[ key ];
                 }
             }
@@ -47,6 +64,11 @@ export function compressObject(input: Object, options: CompressObjectOptions = n
     }
 
     return input;
+}
+
+// TODO
+export function compressCloudRequest() {
+    return;
 }
 
 export function walkObject(input: Object,
@@ -77,4 +99,9 @@ export class CompressObjectOptions {
     public removeNull: boolean = true;
     public removeUndefined: boolean = true;
     public removeDefaultValues: boolean = true;
+}
+
+export interface CompressKeysData {
+    defaultValues?: Object;
+    keysToRemove?: string[];
 }

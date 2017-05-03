@@ -36,7 +36,7 @@ export class RequestsEffects {
 
     @Effect()
     public saveRequest$: Observable<Action> = this.action$
-        .ofType(RequestsActionTypes.SAVE_REQUEST)
+        .ofType(RequestsActionTypes.SAVE_REQUEST, RequestsActionTypes.UPDATE_REQUEST)
         .map(toPayload)
         .switchMap(request => {
             console.info('effect saveRequest', request);

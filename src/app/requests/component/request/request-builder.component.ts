@@ -9,12 +9,13 @@ import {
     EDITOR_BODY_MODES,
     FORM_BODY_MODES,
     HTTP_METHODS,
-    HttpMethod,
+    HttpMethod, HttpRequestParam,
     ParamField
 } from '../../../@model/http/http-request';
 import { bodyMode2TextMode } from '../../../@utils/request.utils';
 import { shortid } from '../../../@utils/string.utils';
 import { queryString2Object } from '../../../@utils/url.utils';
+import { HeaderPickerComponent } from '../../../@shared/components/header-picker.component';
 
 @Component({
     selector: 'request-builder',
@@ -47,6 +48,8 @@ export class RequestBuilderComponent implements OnChanges {
     public _request: DefaultHttpRequest; // internal request
     @ViewChild('urlInput')
     private urlInput: ElementRef;
+    @ViewChild('headerPicker')
+    private headerPicker: HeaderPickerComponent;
 
     public ngOnChanges(changes: SimpleChanges): void {
         let request = changes[ 'request' ];
@@ -123,8 +126,14 @@ export class RequestBuilderComponent implements OnChanges {
         }
     }
 
-    public selectHeaders() {
-        throw new Error('not implemented');
+    public pickHeaders() {
+        this.headerPicker.show();
+    }
+
+    public headersPicked(headers: string[]) {
+        headers.forEach(header => {
+            this._request.headerParams.push(new HttpRequestParam(header));
+        });
     }
 
     public emitChanges() {
