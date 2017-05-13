@@ -1,0 +1,59 @@
+<h1>Share Resource</h1>
+
+<textarea [id]="'share_' + id" class="form-control smaller code"
+          rows="10">{{resourceObject | rsSortKeys | rsJson}}</textarea>
+
+<div class="d-flex justify-content-end">
+    <div class="mr-auto p-2">
+        <a class="btn btn-secondary btn-sm link copy" (click)="copyShare()"
+           [attr.data-clipboard-target]="'#share_' + id">Copy</a>
+        <!--<a class="btn btn-secondary btn-sm link" href="data:text/html,HelloWorld!" download="something.html">Download</a>-->
+    </div>
+    <div class="p-2">
+        <button class="btn btn-info btn-sm"
+                (click)="creatingMapping = !creatingMapping"
+                *ngIf="noOfConnections > 0">
+            Create Cloud Mapping
+        </button>
+    </div>
+</div>
+
+<div class="p-2" *ngIf="defaultMapping">
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Cloud Path</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="larger"><span class="ion-social-dropbox-outline p-2"></span></td>
+            <td class="p-2">{{defaultMapping.pathDisplay}}</td>
+            <td class="larger">
+                <status-button [clz]="'ion-ios-cloud-download p-2'"
+                               [loading]="downloading"
+                               (onClick)="download()"></status-button>
+                <status-button [clz]="'ion-ios-cloud-upload p-2'"
+                               [loading]="uploading"
+                               (onClick)="upload()"></status-button>
+                <a class="ion-close p-2" (click)="deleteMapping()"> </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div *ngIf="creatingMapping && request">
+    <hr/>
+    <div class="p-2">
+        <cloud-mapping [requestId]="request.id" [syncAccounts]="syncAccounts"
+                       [mapping]="request.cloudMapping"
+                       (onSave)="saveMapping($event)"
+                       (onMappingUpdated)="updateMapping($event)"></cloud-mapping>
+
+        <!--<cloud-file-picker [defaultPath]="''" [syncAccounts]="connections"-->
+        <!--(onPathSelected)="onSyncPathUpdated($event)"></cloud-file-picker>-->
+    </div>
+</div>

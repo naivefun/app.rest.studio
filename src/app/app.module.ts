@@ -17,6 +17,8 @@ import { CloudFilePickerComponent } from './@shared/components/cloud-file-picker
 import { CloudMappingComponent } from './@shared/components/cloud-mapping.component';
 import { HeaderPickerComponent } from './@shared/components/header-picker.component';
 import { PathSelectorComponent } from './@shared/components/path-selector.component';
+import { SpinnerComponent } from './@shared/components/spinner.component';
+import { StatusButtonComponent } from './@shared/components/status-button.component';
 import { TextEditorComponent } from './@shared/components/text-editor.component';
 import { ConfigService } from './@shared/config.service';
 import { DbService } from './@shared/db.service';
@@ -24,6 +26,8 @@ import { DefaultHttpClient } from './@shared/http.service';
 import { CodePipe } from './@shared/pipes/code.pipe';
 import { JsonPipe } from './@shared/pipes/json.pipe';
 import { ObjectToPairsPipe } from './@shared/pipes/object-to-pairs.pipe';
+import { PathFilenamePipe } from './@shared/pipes/path-filename';
+import { SafeHtmlPipe } from './@shared/pipes/safe-html.pipe';
 import { SortKeysPipe } from './@shared/pipes/sort-keys.pipe';
 import { TitleCasePipe } from './@shared/pipes/title-case.pipe';
 import { YamlPipe } from './@shared/pipes/yaml.pipe';
@@ -44,17 +48,15 @@ import { XLargeDirective } from './home/x-large';
 import { ImportComponent } from './import/import.component';
 import { NoContentComponent } from './no-content';
 import { ParamGroupComponent } from './requests/component/request/param-group/param-group.component';
+import { ParamItemComponent } from './requests/component/request/param-group/param-item.component';
 import { RequestBuilderComponent } from './requests/component/request/request-builder.component';
 import { RequestsRequestComponent } from './requests/component/request/request.component';
 import { ResponseViewerComponent } from './requests/component/request/response-viewer.component';
+import { ShareResourceComponent } from './requests/component/request/share-resource/share-resource.component';
 import { RequestsSidebarComponent } from './requests/component/sidebar/sidebar.component';
 import { RequestsComponent } from './requests/requests.component';
 import { RequestsEffects } from './requests/store/effect';
 import { reducer } from './store/reducer';
-import { PathFilenamePipe } from './@shared/pipes/path-filename';
-import { SafeHtmlPipe } from "./@shared/pipes/safe-html.pipe";
-import { SpinnerComponent } from './@shared/components/spinner.component';
-import { StatusButtonComponent } from './@shared/components/status-button.component';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -99,6 +101,8 @@ type StoreType = {
         TextEditorComponent,
         SpinnerComponent,
         StatusButtonComponent,
+        ShareResourceComponent,
+        ParamItemComponent,
 
         // pipes
         TitleCasePipe,

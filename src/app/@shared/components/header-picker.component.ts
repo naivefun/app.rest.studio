@@ -87,7 +87,7 @@ export class HeaderPickerComponent extends BaseDialogComponent implements OnInit
     private _nonStandardResponseHeaders: HeaderObject[] = [];
     private textChanged: Subject<string> = new Subject();
     private textChanged$: Observable<string> = this.textChanged.asObservable()
-        .debounceTime(1000)
+        .debounceTime(200)
         .distinctUntilChanged();
     @ViewChild('filter')
     private filter: ElementRef;

@@ -1,14 +1,16 @@
 import { type } from '../../@utils/store.utils';
 import { Action } from '@ngrx/store';
-import { DefaultHttpRequest } from '../../@model/http/http-request';
+import { DefaultHttpRequest, HttpRequestParam } from '../../@model/http/http-request';
 import { DefaultHttpResponse } from '../../@model/http/http-response';
 
 export const RequestsActionTypes = {
     CREATE_REQUEST: type('CREATE_REQUEST'),
     SELECT_REQUEST: type('SELECT_REQUEST'),
     UPDATE_REQUEST: type('UPDATE_REQUEST'),
+    UPDATE_REQUEST_PARAMS: type('UPDATE_REQUEST_PARAMS'),
     RESPONSE_RECEIVED: type('RESPONSE_RECEIVED'),
     SAVE_REQUEST: type('SAVE_REQUEST'),
+    SAVE_ACTIVE_REQUEST: type('SAVE_ACTIVE_REQUEST'),
     SAVE_REQUEST_SUCCESS: type('SAVE_REQUEST_SUCCESS'),
     UP_REQUEST: type('UP_REQUEST'),
     DELETE_REQUEST: type('DELETE_REQUEST'),
@@ -39,6 +41,13 @@ export class UpdateRequestAction implements Action {
     public type = RequestsActionTypes.UPDATE_REQUEST;
 
     constructor(public payload: DefaultHttpRequest) {
+    }
+}
+
+export class UpdateRequestParamsAction implements Action {
+    public type = RequestsActionTypes.UPDATE_REQUEST_PARAMS;
+
+    constructor(public payload: { [property: string]: HttpRequestParam }) {
     }
 }
 

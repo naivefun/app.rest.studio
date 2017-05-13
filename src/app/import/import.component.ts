@@ -150,7 +150,7 @@ export class ImportComponent extends BaseComponent {
         let request = new DefaultHttpRequest('https://www.dropbox.com/s/n6m5rwhryott7vv/hello.txt?raw=1');
         this.httpClient.execute(request)
             .then(result => {
-
+                return;
             });
     }
 

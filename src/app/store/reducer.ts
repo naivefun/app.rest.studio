@@ -20,6 +20,5 @@ const reducers = {
 const devReducer: ActionReducer<State> = combineReducers(reducers);
 
 export function reducer(state: any, action: any) {
-    console.debug('calling reducer', state, action);
     return devReducer(state, action);
 }

@@ -118,6 +118,7 @@ export class RequestsSidebarComponent extends OnPushComponent implements OnChang
     }
 
     public selectRequest(id: string) {
+        this.activeRequestId = id; // ? should remove
         this.store.dispatch(new SelectRequestAction(id));
     }
 

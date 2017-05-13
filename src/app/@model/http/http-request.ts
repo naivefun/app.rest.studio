@@ -142,5 +142,5 @@ export function toCloudRequest(request: DefaultHttpRequest) {
 }
 
 export function updateRequestProperty(request: DefaultHttpRequest, key: string, value: any) {
-
+    return request;
 }

@@ -44,7 +44,7 @@
     <div class="section" *ngIf="!off.query">
         <div class="header d-flex justify-content-end">
             <div class="mr-auto"><b>Query</b></div>
-            <a class="link">Extract From URL</a>
+            <a class="link" (click)="extractQuery()">Extract From URL</a>
         </div>
         <request-param-group [paramGroup]="_request.queryParams"
                              (paramsUpdated)="emitChanges()">
@@ -91,7 +91,8 @@
         <div class="header d-flex justify-content-end">
             <div class="mr-auto"><b>Description</b></div>
         </div>
-        <textarea class="form-control" rows="5" [(ngModel)]="_request.description"></textarea>
+        <textarea class="form-control" rows="5"
+                  (change)="updateDescription($event.target.value)">{{_request?.description}}</textarea>
     </div>
 </div>
 <header-picker #headerPicker (onHeadersPicker)="headersPicked($event)"></header-picker>

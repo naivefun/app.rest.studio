@@ -201,7 +201,12 @@ export class ResponseViewerComponent extends BaseComponent implements OnChanges,
         if (_.isEmpty(req.pathParams)) delete req.pathParams;
 
         // this.previewRequest = req;
-        this.previewRequest = toAxiosOptions(request);
+        // this.previewRequest = toAxiosOptions(request);
+        console.debug('toRequestPreview', req);
+        this.previewRequest = compressObject(_.cloneDeep(req), undefined,
+            {
+                keysToRemove: [ 'defaultBindId', 'sharedLink', 'cloudMapping' ]
+            });
     }
 
     public sharedRequest(minified = true) {

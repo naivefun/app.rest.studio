@@ -1,7 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { HttpRequestParam } from '../../../../@model/http/http-request';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
+import { HttpRequestParam } from '../../../../@model/http/http-request';
 import { BaseComponent } from '../../../../@shared/components/base.component';
+import { State } from '../../../../store/reducer';
+import { UpdateRequestParamsAction } from '../../../store/action';
 
 @Component({
     selector: 'request-param-group',
@@ -39,6 +42,10 @@ export class ParamGroupComponent extends BaseComponent {
         this._paramGroup = paramGroup || [];
     }
 
+    constructor(private store: Store<State>) {
+        super();
+    }
+
     public addWithTab(e) {
         alert('tab ' + e.target.value);
     }
@@ -55,10 +62,17 @@ export class ParamGroupComponent extends BaseComponent {
         }
 
         e.target.value = '';
+        // this.emitChanges();
     }
 
     public delete(param: HttpRequestParam) {
         _.pull(this.paramGroup, param);
+        this.emitChanges();
+    }
+
+    public toggle(param: HttpRequestParam) {
+        param.off = !param.off;
+        this.emitChanges();
     }
 
     public clone(param: HttpRequestParam) {
@@ -66,9 +80,17 @@ export class ParamGroupComponent extends BaseComponent {
         clone.off = param.off;
         let index = _.indexOf(this.paramGroup, param);
         this.paramGroup.splice(index + 1, 0, clone);
+        this.emitChanges();
     }
 
-    public emitChanges() {
+    public emitChanges(e?: any, param?: HttpRequestParam, value = true) {
+        if (e && param) {
+            if (value)
+                param.value = e.target.value;
+            else
+                param.key = e.target.value;
+        }
+
         this.paramsUpdated.emit(this.paramGroup);
     }
 }

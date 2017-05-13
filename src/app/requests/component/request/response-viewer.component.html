@@ -46,16 +46,16 @@
         </table>
     </div>
     <div class="flex-1 p-2" *ngSwitchCase="'request'">
-        <div class="p-1 smaller">
+        <div class="p-1">
             <a class="option" [ngClass]="{on: !shareView}" (click)="shareView = false">Preview Request</a>
             <a class="option" [ngClass]="{on: shareView}" (click)="shareRequest()">Share Request</a>
         </div>
         <hr/>
 
-        <pre class="smaller" [innerHtml]="(previewRequest || {}) | rsYaml | rsCode: 'yaml'" *ngIf="shareView"></pre>
-        <div *ngIf="!shareView">
-            <div class="p-2 d-flex justify-content-end">
-            </div>
+        <pre class="p-2" [innerHtml]="(previewRequest || {}) | rsYaml | rsCode: 'yaml'" *ngIf="!shareView"></pre>
+        <div *ngIf="shareView">
+            <share-resource [resourceType]="0"
+                            [resourceObject]="request" [mapping]="request?.cloudMapping"></share-resource>
             <textarea [id]="'share_' + id" class="form-control smaller code"
                       rows="10">{{request | rsSortKeys | rsJson}}</textarea>
 

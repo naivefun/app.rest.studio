@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, toPayload } from '@ngrx/effects';
-import { Observable } from 'rxjs';
-import { LoadRequestsSuccessAction, RequestsActions, RequestsActionTypes } from './action';
-import { Action } from '@ngrx/store';
 import { go } from '@ngrx/router-store';
-import { DB, DbService } from '../../@shared/db.service';
+import { Action } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { DefaultHttpRequest } from '../../@model/http/http-request';
-import * as _ from 'lodash';
+import { AlertService } from '../../@shared/alert.service';
+import { DB, DbService } from '../../@shared/db.service';
+import { LoadRequestsSuccessAction, RequestsActionTypes } from './action';
 
 @Injectable()
 export class RequestsEffects {
@@ -16,7 +16,6 @@ export class RequestsEffects {
         .switchMap(__ => {
             return this.db.all(DB.REQUESTS)
                 .switchMap(requests => {
-                    console.log('loaded requests:', requests);
                     return Observable.of(new LoadRequestsSuccessAction(requests));
                 });
         });
@@ -26,10 +25,8 @@ export class RequestsEffects {
         .ofType(RequestsActionTypes.CREATE_REQUEST)
         .map(toPayload)
         .switchMap(request => {
-            console.info('effect createRequest', request);
             return this.db.save(request, DB.REQUESTS)
                 .switchMap(result => {
-                    console.debug('create request result:', result);
                     return Observable.of(go('/requests/' + request.id));
                 });
         });
@@ -37,12 +34,16 @@ export class RequestsEffects {
     @Effect()
     public saveRequest$: Observable<Action> = this.action$
         .ofType(RequestsActionTypes.SAVE_REQUEST, RequestsActionTypes.UPDATE_REQUEST)
-        .map(toPayload)
-        .switchMap(request => {
-            console.info('effect saveRequest', request);
+        .switchMap((action: Action) => {
+            let request = action.payload;
             return this.db.save(request, DB.REQUESTS)
                 .switchMap(result => {
-                    console.debug('save request result:', result);
+                    if (action.type === RequestsActionTypes.SAVE_REQUEST)
+                        this.success('request saved');
+                    return Observable.empty();
+                })
+                .catch(err => {
+                    this.error('failed to save request', err);
                     return Observable.empty();
                 });
         });
@@ -52,10 +53,9 @@ export class RequestsEffects {
         .ofType(RequestsActionTypes.DELETE_REQUEST)
         .map(toPayload)
         .switchMap(id => {
-            console.info('effect deleteRequest', id);
             return this.db.delete(id, DB.REQUESTS)
                 .switchMap(result => {
-                    console.debug('delete request result:', result);
+                    this.success('request deleted');
                     return Observable.empty();
                 });
         });
@@ -76,6 +76,15 @@ export class RequestsEffects {
     // TODO: when delete, redirect when necessary
 
     constructor(private db: DbService,
+                private alertService: AlertService,
                 private action$: Actions) {
+    }
+
+    private success(text: string) {
+        this.alertService.successQuick(text);
+    }
+
+    private error(text: string, err: any) {
+        this.alertService.error(`${text}: ${err.message}`);
     }
 }
