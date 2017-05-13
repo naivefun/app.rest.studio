@@ -22,7 +22,7 @@ export class RequestsRequestComponent implements OnInit {
     public id: string;
     public request$: Observable<DefaultHttpRequest>;
     public response$: Observable<DefaultHttpResponse>;
-    public connections$: Observable<SyncProviderAccount[]>;
+    public syncAccounts$: Observable<SyncProviderAccount[]>;
 
     public request: DefaultHttpRequest;
 
@@ -31,7 +31,7 @@ export class RequestsRequestComponent implements OnInit {
                 private route: ActivatedRoute) {
         this.request$ = store.select(getRequestsActiveRequest);
         this.response$ = store.select(getRequestsActiveResponse);
-        this.connections$ = store.select(getConnections);
+        this.syncAccounts$ = store.select(getConnections);
 
         this.request$.subscribe(request => this.request = request);
         this.response$.subscribe(response => {
@@ -50,12 +50,13 @@ export class RequestsRequestComponent implements OnInit {
     }
 
     public onRequestUpdated(request: DefaultHttpRequest) {
-        if (this.request.url !== request.url
-            || this.request.title !== request.title) {
-            this.store.dispatch(new UpdateRequestAction(request));
-        } else {
-            this.request = _.cloneDeep(request);
-        }
+        this.store.dispatch(new UpdateRequestAction(request));
+        // if (this.request.url !== request.url
+        //     || this.request.title !== request.title) {
+        //     this.store.dispatch(new UpdateRequestAction(request));
+        // } else {
+        //     this.request = _.cloneDeep(request);
+        // }
     }
 
     public onSendRequest(request: DefaultHttpRequest) {

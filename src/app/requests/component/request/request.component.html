@@ -3,5 +3,6 @@
                  (onRequestUpdated)="onRequestUpdated($event)"></request-builder>
 <response-viewer [id]="id" [request]="request$ | async"
                  [response]="response$ | async"
-                 [connections]="connections$ | async"
+                 [syncAccounts]="syncAccounts$ | async"
+                 (onRequestUpdated)="onRequestUpdated($event)"
                  (onClearResponse)="onClearResponse($event)"></response-viewer>

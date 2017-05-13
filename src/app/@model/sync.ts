@@ -9,7 +9,7 @@ export class SyncProviderAccount {
     public accountId: string;
     public connectedAt: number;
 
-    constructor(provider: SyncProvider, accessToken: string, title: string = undefined) {
+    constructor(provider: SyncProvider, accessToken: string, title?: string) {
         this.id = shortid();
         this.provider = provider;
         this.accessToken = accessToken;
@@ -48,4 +48,24 @@ export interface TokenObject {
 
 export interface AccountObject {
     displayName: string;
+}
+
+export class CloudMapping {
+    public syncAccountId: string;
+    public path: string;
+    public pathDisplay: string;
+    public sharedLink: string;
+    public lastUploaded: number;
+    public lastDownloaded: number;
+    public autoUpload: boolean;
+    public readOnly: boolean;
+    public serverModified: number;
+    public clientModified: number;
+}
+
+export enum SyncObjectType {
+    REQUEST,
+    COLLECTION,
+    OBJECT,
+    PAGE,
 }

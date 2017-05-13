@@ -55,11 +55,11 @@ export class ConfigService {
             });
     }
 
-    public deleteSyncAccount(account: SyncProviderAccount) {
+    public deleteSyncAccount(id: string) {
         return this.getConfig(false)
             .then((config: LocalConfig) => {
                 config.connectedAccounts = config.connectedAccounts
-                    .filter(acc => acc.id !== account.id);
+                    .filter(acc => acc.id !== id);
                 this.localConfig = config;
                 return this.saveConfig();
             });

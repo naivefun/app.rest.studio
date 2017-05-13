@@ -10,8 +10,10 @@ import {
     FORM_BODY_MODES,
     HTTP_METHODS,
     HttpMethod,
+    HttpRequestParam,
     ParamField
 } from '../../../@model/http/http-request';
+import { HeaderPickerComponent } from '../../../@shared/components/header-picker.component';
 import { bodyMode2TextMode } from '../../../@utils/request.utils';
 import { shortid } from '../../../@utils/string.utils';
 import { queryString2Object } from '../../../@utils/url.utils';
@@ -47,6 +49,8 @@ export class RequestBuilderComponent implements OnChanges {
     public _request: DefaultHttpRequest; // internal request
     @ViewChild('urlInput')
     private urlInput: ElementRef;
+    @ViewChild('headerPicker')
+    private headerPicker: HeaderPickerComponent;
 
     public ngOnChanges(changes: SimpleChanges): void {
         let request = changes[ 'request' ];
@@ -76,13 +80,20 @@ export class RequestBuilderComponent implements OnChanges {
     }
 
     public reset(firstChange: boolean) {
+        if (this._request && this._request.id === this.request.id) {
+            // realtime update break input focus
+            return;
+        }
+
         this._request = _.cloneDeep(this.request);
-        setTimeout(() => {
-            if (this.urlInput && this.urlInput.nativeElement) {
-                this.urlInput.nativeElement.focus();
-            }
-        }, 100);
         this.setMode(this._request.mode);
+        if (firstChange) {
+            setTimeout(() => {
+                if (this.urlInput && this.urlInput.nativeElement) {
+                    this.urlInput.nativeElement.focus();
+                }
+            }, 100);
+        }
     }
 
     public setMode(mode: BodyMode) {
@@ -105,6 +116,12 @@ export class RequestBuilderComponent implements OnChanges {
 
     public updateBody(text: string) {
         this._request.body = text;
+        this.emitChanges();
+    }
+
+    public updateDescription(text: string) {
+        this._request.description = text;
+        this.emitChanges();
     }
 
     public extractQuery() {
@@ -118,13 +135,22 @@ export class RequestBuilderComponent implements OnChanges {
                     });
             });
 
-            this.request.queryParams = _.clone(this.request.queryParams);
-            this.request.url = this.request.url.split('?')[ 0 ];
+            this._request.queryParams = _.clone(this.request.queryParams);
+            this._request.url = this.request.url.split('?')[ 0 ];
+            this.emitChanges();
         }
     }
 
-    public selectHeaders() {
-        throw new Error('not implemented');
+    public pickHeaders() {
+        this.headerPicker.show();
+    }
+
+    public headersPicked(headers: string[]) {
+        if (_.isEmpty(headers)) return;
+        headers.forEach(header => {
+            this._request.headerParams.push(new HttpRequestParam(header));
+        });
+        this.emitChanges();
     }
 
     public emitChanges() {

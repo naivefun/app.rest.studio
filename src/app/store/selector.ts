@@ -7,7 +7,6 @@ import {
 import { LocalConfig } from '../@shared/config.service';
 
 export const getRequestsState = (state: State) => {
-    console.debug('global state', state);
     return state.requests;
 };
 

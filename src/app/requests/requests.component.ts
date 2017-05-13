@@ -18,8 +18,8 @@ export class RequestsComponent implements OnInit {
     public activeRequestId$: Observable<string>;
 
     constructor(private store: Store<State>) {
-        this.requests$ = store.select(getRequestsRequests);
         this.activeRequestId$ = store.select(getRequestsActiveId);
+        this.requests$ = store.select(getRequestsRequests);
     }
 
     public ngOnInit() {

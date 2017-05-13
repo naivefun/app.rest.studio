@@ -42,7 +42,7 @@ export class ConnectComponent {
             syncProvider.getAccount()
                 .then(account => {
                     syncAccount.title = account.displayName;
-                    this.syncService.persistConnection(syncAccount)
+                    this.syncService.saveConnection(syncAccount)
                         .then(result => {
                             // show actual connected accounts for choose
                             console.debug('persist connection result', result);
@@ -53,6 +53,9 @@ export class ConnectComponent {
     }
 
     public deleteAccount(con: SyncProviderAccount) {
-        this.config.deleteSyncAccount(con);
+        this.config.deleteSyncAccount(con.id)
+            .then(result => {
+                this.store.dispatch(new UpdateConfigAction(this.config.localConfig));
+            });
     }
 }

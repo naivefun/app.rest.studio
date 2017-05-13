@@ -1,7 +1,7 @@
 import * as shortId from 'shortid';
 import * as Hjson from 'hjson';
 import * as Yaml from 'js-yaml';
-
+import * as _ from 'lodash';
 declare const hljs: any;
 
 export function shortid(prefix = '', suffix = '') {
@@ -72,4 +72,12 @@ export function highlightCode(text: string, languageSubset?: string[]) {
 
 export function isBinaryString(text: string) {
     return /[\x00-\x08\x0E-\x1F]/.test(text);
+}
+
+export function isBlank(text: string) {
+    if (_.isString(text)) {
+        return _.trim(text).length === 0;
+    }
+
+    throw new Error('text is not string: ' + text);
 }
