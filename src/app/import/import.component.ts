@@ -13,8 +13,6 @@ import { DB, DbService } from '../@shared/db.service';
 import { DefaultHttpClient } from '../@shared/http.service';
 import { SyncService } from '../@shared/sync/sync.service';
 import { parseJson } from '../@utils/string.utils';
-import { State } from '../store/reducer';
-import { getConnections } from '../store/selector';
 
 @Component({
     selector: 'import',
@@ -35,10 +33,9 @@ export class ImportComponent extends BaseComponent {
                 private syncService: SyncService,
                 private alertService: AlertService,
                 private httpClient: DefaultHttpClient,
-                private db: DbService,
-                private store: Store<State>) {
+                private db: DbService) {
         super();
-        this.syncAccounts$ = store.select(getConnections);
+        // this.syncAccounts$ = store.select(getConnections);
     }
 
     public loadDropboxFiles(path: string, account: SyncProviderAccount) {
@@ -156,13 +153,13 @@ export class ImportComponent extends BaseComponent {
 
     private mergeRequest(source: DefaultHttpRequest, target: DefaultHttpRequest) {
         if (!target) return source;
-        [ 'title', 'description', 'url', 'method', 'timeout', 'mode',
-            'body', 'createdAt' ].forEach(key => {
-            target[ key ] = source[ key ];
+        ['title', 'description', 'url', 'method', 'timeout', 'mode',
+            'body', 'createdAt'].forEach(key => {
+            target[key] = source[key];
         });
-        [ 'queryParams', 'headerParams', 'formParams', 'pathParams', 'disabledFields' ]
+        ['queryParams', 'headerParams', 'formParams', 'pathParams', 'disabledFields']
             .forEach(key => {
-                target[ key ] = source[ key ] || [];
+                target[key] = source[key] || [];
             });
         return target;
     }

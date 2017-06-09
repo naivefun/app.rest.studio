@@ -21,7 +21,7 @@ import { queryString2Object } from '../../../@utils/url.utils';
 @Component({
     selector: 'request-builder',
     templateUrl: './request-builder.component.html',
-    styles: [ `
+    styles: [`
         .section {
             padding: 1em;
         }
@@ -31,8 +31,12 @@ import { queryString2Object } from '../../../@utils/url.utils';
             border-bottom: 1px solid #ddd;
             margin-bottom: .3em;
             padding-right: .5em;
+            font-family: Raleway;
+            font-weight: 600;
+            font-size: 12px;
+            color: #555;
         }
-    ` ]
+    `]
 })
 export class RequestBuilderComponent implements OnChanges {
 
@@ -40,20 +44,22 @@ export class RequestBuilderComponent implements OnChanges {
     @Input() public request: DefaultHttpRequest;
     @Output() public onRequestUpdated = new EventEmitter<DefaultHttpRequest>();
     @Output() public onSendRequest = new EventEmitter<DefaultHttpRequest>();
+    public iRequest: DefaultHttpRequest; // internal request
+
+    public $BodyEditor = BodyEditor;
     public methods = HTTP_METHODS;
     public off: any = {};
     public modes: BodyMode[] = BODY_MODES;
-    public bodyEditor: string;
+    public bodyEditor: BodyEditor;
     public editorMode: TextMode;
 
-    public _request: DefaultHttpRequest; // internal request
     @ViewChild('urlInput')
     private urlInput: ElementRef;
     @ViewChild('headerPicker')
     private headerPicker: HeaderPickerComponent;
 
     public ngOnChanges(changes: SimpleChanges): void {
-        let request = changes[ 'request' ];
+        let request = changes['request'];
         if (request && request.currentValue) {
             this.reset(request.isFirstChange());
         }
@@ -61,82 +67,78 @@ export class RequestBuilderComponent implements OnChanges {
         console.debug('[requestBuilder] changes', changes);
     }
 
-    public setMethod(method: HttpMethod) {
-        this._request.method = method;
-        this.emitChanges();
-    }
-
+    // region UI
     public disableField(field: string) {
-        console.debug('disable', field, ParamField[ field ]);
+        console.debug('disable', field, ParamField[field]);
     }
 
-    public toggoleField(field: string) {
-        this.off[ field ] = !!!this.off[ field ];
+    public toggleField(field: string) {
+        this.off[field] = !!!this.off[field];
     }
 
-    public run() {
-        console.debug('value', this._request);
-        this.onSendRequest.emit(this._request);
-    }
-
-    public reset(firstChange: boolean) {
-        if (this._request && this._request.id === this.request.id) {
-            // realtime update break input focus
-            return;
-        }
-
-        this._request = _.cloneDeep(this.request);
-        this.setMode(this._request.mode);
-        if (firstChange) {
-            setTimeout(() => {
-                if (this.urlInput && this.urlInput.nativeElement) {
-                    this.urlInput.nativeElement.focus();
-                }
-            }, 100);
-        }
-    }
-
-    public setMode(mode: BodyMode) {
-        this._request.mode = mode;
+    public setBodyMode(mode: BodyMode) {
+        this.iRequest.mode = mode;
         if (_.includes(FORM_BODY_MODES, mode)) {
-            this.bodyEditor = 'form';
+            this.bodyEditor = BodyEditor.FORM;
         } else if (_.includes(EDITOR_BODY_MODES, mode)) {
-            this.bodyEditor = 'editor';
+            this.bodyEditor = BodyEditor.EDITOR;
         } else if (_.includes(BIN_BODY_MODES, mode)) {
-            this.bodyEditor = 'bin';
+            this.bodyEditor = BodyEditor.BIN;
         } else {
             delete this.bodyEditor;
         }
-        this.updateEditorMode();
+
+        this.editorMode = bodyMode2TextMode(this.iRequest.mode);
     }
 
-    public updateEditorMode() {
-        this.editorMode = bodyMode2TextMode(this._request.mode);
+    // endregion
+
+    // region update request
+    public setMethod(method: HttpMethod) {
+        this.iRequest.method = method;
+        this.emitChanges();
     }
 
     public updateBody(text: string) {
-        this._request.body = text;
+        this.iRequest.body = text;
         this.emitChanges();
     }
 
     public updateDescription(text: string) {
-        this._request.description = text;
+        this.iRequest.description = text;
         this.emitChanges();
     }
 
     public extractQuery() {
-        let queryObject = queryString2Object(this._request.url);
+        let queryObject = queryString2Object(this.iRequest.url);
         if (!_.isEmpty(queryObject)) {
             _.forOwn(queryObject, (value, key) => {
-                if (value || key)
+                if (key)
                     this.request.queryParams.push({
                         id: shortid(), off: false,
                         key, value
                     });
             });
 
-            this._request.queryParams = _.clone(this.request.queryParams);
-            this._request.url = this.request.url.split('?')[ 0 ];
+            this.iRequest.queryParams = _.cloneDeep(this.request.queryParams);
+            this.iRequest.url = this.request.url.split('?')[0];
+            this.emitChanges();
+        }
+    }
+
+    // endregion
+
+    // region events
+    public run() {
+        console.debug('[RequestBuilder] to run request', this.iRequest);
+        this.onSendRequest.emit(this.iRequest);
+    }
+
+    public addHeaders(headerNames: string[]) {
+        if (!_.isEmpty(headerNames)) {
+            headerNames.forEach(name => {
+                this.iRequest.headerParams.push(new HttpRequestParam(name));
+            });
             this.emitChanges();
         }
     }
@@ -145,15 +147,33 @@ export class RequestBuilderComponent implements OnChanges {
         this.headerPicker.show();
     }
 
-    public headersPicked(headers: string[]) {
-        if (_.isEmpty(headers)) return;
-        headers.forEach(header => {
-            this._request.headerParams.push(new HttpRequestParam(header));
-        });
-        this.emitChanges();
+    public emitChanges() {
+        this.onRequestUpdated.emit(this.iRequest);
     }
 
-    public emitChanges() {
-        this.onRequestUpdated.emit(this._request);
+    // endregion
+
+    private reset(firstChange: boolean) {
+        // realtime update break input focus
+        // if request is not switch, skip reset
+        if (this.iRequest && this.iRequest.id === this.request.id) {
+            return;
+        }
+
+        this.iRequest = _.cloneDeep(this.request);
+        this.setBodyMode(this.iRequest.mode);
+        if (firstChange) {
+            setTimeout(() => {
+                if (this.urlInput && this.urlInput.nativeElement) {
+                    this.urlInput.nativeElement.focus();
+                }
+            }, 100);
+        }
     }
+}
+
+enum BodyEditor {
+    FORM,
+    EDITOR,
+    BIN
 }

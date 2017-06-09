@@ -182,7 +182,7 @@ export class TextEditorComponent extends OnPushComponent implements AfterViewIni
     public setMode(mode: TextMode, force = false) {
         if (this.session && (force || this.mode !== mode)) {
             console.debug('setting editor mode to ', mode);
-            this.session.setMode(`ace/mode/${mode}`);
+            this.session.setBodyMode(`ace/mode/${mode}`);
         }
     }
 

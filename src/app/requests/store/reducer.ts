@@ -3,9 +3,9 @@ import { DefaultHttpRequest, HttpRequestParam } from '../../@model/http/http-req
 import { DefaultHttpResponse } from '../../@model/http/http-response';
 import { mergeState } from '../../@utils/store.utils';
 import { RequestsActions, RequestsActionTypes } from './action';
-import { RequestsInitialState, RequestsState } from './state';
+import { RequestsInitialState, IRequestsState } from './state';
 
-export function reducer(state = RequestsInitialState, action: RequestsActions): RequestsState {
+export function reducer(state = RequestsInitialState, action: RequestsActions): IRequestsState {
     switch (action.type) {
         case RequestsActionTypes.LOAD_REQUESTS:
             return handleLoadRequests(state);
@@ -39,14 +39,14 @@ export function reducer(state = RequestsInitialState, action: RequestsActions): 
 }
 
 // region handlers
-function handleCreateRequest(state: RequestsState, request: DefaultHttpRequest) {
+function handleCreateRequest(state: IRequestsState, request: DefaultHttpRequest) {
     request = request || DefaultHttpRequest.defaultRequest();
     let requests = [ request, ...state.requests ];
     console.debug('created request', requests);
     return mergeState(state, { requests });
 }
 
-function handleUpdateRequest(state: RequestsState, request: DefaultHttpRequest) {
+function handleUpdateRequest(state: IRequestsState, request: DefaultHttpRequest) {
     let requests = state.requests;
     if (request) {
         requests = requests.map(req => {
@@ -60,7 +60,7 @@ function handleUpdateRequest(state: RequestsState, request: DefaultHttpRequest) 
     return mergeState(state, { requests });
 }
 
-function handleUpdateRequestParams(state: RequestsState, options: { [property: string]: HttpRequestParam }) {
+function handleUpdateRequestParams(state: IRequestsState, options: { [property: string]: HttpRequestParam }) {
     let request = state.requests.find(r => r.id === state.activeRequestId);
     let keys = Object.keys(options);
     if (request) {
@@ -88,7 +88,7 @@ function handleUpdateRequestParams(state: RequestsState, options: { [property: s
     return state;
 }
 
-function handleSaveRequest(state: RequestsState, request: DefaultHttpRequest) {
+function handleSaveRequest(state: IRequestsState, request: DefaultHttpRequest) {
     let requests = state.requests.map(req => {
         if (req.id === request.id) {
             return request;
@@ -100,12 +100,12 @@ function handleSaveRequest(state: RequestsState, request: DefaultHttpRequest) {
     return mergeState(state, { requests, savingRequest: true });
 }
 
-function handleSaveRequestSuccess(state: RequestsState, request: DefaultHttpRequest) {
+function handleSaveRequestSuccess(state: IRequestsState, request: DefaultHttpRequest) {
     // TODO: replace with new request
     return mergeState(state, { savingRequest: false });
 }
 
-function handleUpRequest(state: RequestsState, id: string) {
+function handleUpRequest(state: IRequestsState, id: string) {
     let request = _.find(state.requests, req => req.id === id);
     if (request) {
         _.pull(state.requests, request);
@@ -117,16 +117,16 @@ function handleUpRequest(state: RequestsState, id: string) {
     }
 }
 
-function handleDeleteRequest(state: RequestsState, id: string) {
+function handleDeleteRequest(state: IRequestsState, id: string) {
     let requests = state.requests.filter(req => req.id !== id);
     return mergeState(state, { requests });
 }
 
-function handleLoadRequests(state: RequestsState) {
+function handleLoadRequests(state: IRequestsState) {
     return mergeState(state, { loadingRequests: true });
 }
 
-function handleLoadRequestsSuccess(state: RequestsState, requests: DefaultHttpRequest[]) {
+function handleLoadRequestsSuccess(state: IRequestsState, requests: DefaultHttpRequest[]) {
     requests = requests || [];
     if (requests.length === 0) {
         requests.push(DefaultHttpRequest.defaultRequest());
@@ -136,7 +136,7 @@ function handleLoadRequestsSuccess(state: RequestsState, requests: DefaultHttpRe
     return mergeState(state, { requests, activeRequestId, loadingRequests: false });
 }
 
-function handleSelectRequest(state: RequestsState, id: string) {
+function handleSelectRequest(state: IRequestsState, id: string) {
     let activeRequestId = state.activeRequestId;
     for (let request of state.requests) {
         if (request.id === id) {
@@ -148,13 +148,13 @@ function handleSelectRequest(state: RequestsState, id: string) {
     return mergeState(state, { activeRequestId });
 }
 
-function handleResponseReceived(state: RequestsState, response: DefaultHttpResponse) {
+function handleResponseReceived(state: IRequestsState, response: DefaultHttpResponse) {
     let responses = _.clone(state.responses);
     responses[ response.requestId ] = response;
     return mergeState(state, { responses });
 }
 
-function handleClearResponse(state: RequestsState, requestId: string) {
+function handleClearResponse(state: IRequestsState, requestId: string) {
     let responses = _.clone(state.responses);
     responses[ requestId ] = null;
     return mergeState(state, { responses });

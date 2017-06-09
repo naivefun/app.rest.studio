@@ -1,13 +1,11 @@
+import { NgReduxRouterModule } from '@angular-redux/router';
+import { NgReduxModule } from '@angular-redux/store';
 import { ApplicationRef, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { PreloadAllModules, RouterModule } from '@angular/router';
 import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
-import { EffectsModule } from '@ngrx/effects';
-import { RouterStoreModule } from '@ngrx/router-store';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import '../styles/headings.css';
 
 import '../styles/styles.scss';
@@ -55,8 +53,9 @@ import { ResponseViewerComponent } from './requests/component/request/response-v
 import { ShareResourceComponent } from './requests/component/request/share-resource/share-resource.component';
 import { RequestsSidebarComponent } from './requests/component/sidebar/sidebar.component';
 import { RequestsComponent } from './requests/requests.component';
-import { RequestsEffects } from './requests/store/effect';
-import { reducer } from './store/reducer';
+import { StoreModule } from './@store/store.module';
+import { RequestsEpics } from './requests/@store/epics';
+import { RequestsActions } from './requests/@store/actions';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -68,6 +67,8 @@ const APP_PROVIDERS = [
     DbService,
     SyncService,
     AlertService,
+    RequestsEpics,
+    RequestsActions,
 ];
 
 type StoreType = {
@@ -121,10 +122,14 @@ type StoreType = {
         HttpModule,
         RouterModule.forRoot(ROUTES, { useHash: false, preloadingStrategy: PreloadAllModules }),
         // store
-        StoreModule.provideStore(reducer),
-        EffectsModule.run(RequestsEffects),
-        RouterStoreModule.connectRouter(),
-        StoreDevtoolsModule.instrumentOnlyWithExtension()
+        NgReduxModule,
+        NgReduxRouterModule,
+        StoreModule
+        //
+        // StoreModule.provideStore(reducer),
+        // EffectsModule.run(RequestsEffects),
+        // RouterStoreModule.connectRouter(),
+        // StoreDevtoolsModule.instrumentOnlyWithExtension()
     ],
     providers: [ // expose our Services and Providers into Angular's dependency injection
         ENV_PROVIDERS,

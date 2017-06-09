@@ -1,11 +1,12 @@
+import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { DefaultHttpRequest } from '../../../@model/http/http-request';
-import { State } from '../../../store/reducer';
-import { Store } from '@ngrx/store';
-import { CreateRequestAction, DeleteRequestAction, SelectRequestAction, UpRequestAction } from '../../store/action';
-import { OnPushComponent } from '../../../@shared/components/base.component';
-import * as _ from 'lodash';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
+import { DefaultHttpRequest } from '../../../@model/http/http-request';
+import { OnPushComponent } from '../../../@shared/components/base.component';
+import { IAppState } from '../../../@store/root.types';
+import { RequestsActions } from '../../@store/actions';
 
 @Component({
     selector: 'requests-sidebar',
@@ -94,9 +95,10 @@ export class RequestsSidebarComponent extends OnPushComponent implements OnChang
     @Input() public requests: DefaultHttpRequest[] = [];
     @Input() public activeRequestId: string;
 
-    constructor(private store: Store<State>,
-                private router: Router,
-                private cd: ChangeDetectorRef) {
+    constructor(private router: Router,
+                private cd: ChangeDetectorRef,
+                private store: NgRedux<IAppState>,
+                private actions: RequestsActions) {
         super(cd);
     }
 
@@ -106,33 +108,33 @@ export class RequestsSidebarComponent extends OnPushComponent implements OnChang
             console.debug('requests', this.requests, 'id', this.activeRequestId);
             if (!_.isEmpty(this.requests)) {
                 let requestId = this.activeRequestId || this.requests[0].id;
-                this.router.navigate([`/requests/${requestId}`]);
-                this.selectRequest(requestId);
+                this.goToRequest(requestId);
             }
         });
     }
 
     public createRequest() {
         let request = DefaultHttpRequest.defaultRequest();
-        this.store.dispatch(new CreateRequestAction(request));
+        this.store.dispatch(this.actions.createRequest(request));
     }
 
     public selectRequest(id: string) {
-        this.activeRequestId = id; // ? should remove
-        this.store.dispatch(new SelectRequestAction(id));
+        this.store.dispatch(this.actions.selectRequest(id));
     }
 
     public deleteRequest(id: string, e: any) {
         if (e) e.stopPropagation();
-        this.store.dispatch(new DeleteRequestAction(id));
+        this.store.dispatch(this.actions.deleteRequest(id));
+        // this.store.dispatch(new DeleteRequestAction(id));
     }
 
     public upRequest(id: string, e: any) {
         if (e) e.stopPropagation();
-        this.store.dispatch(new UpRequestAction(id));
+        // this.store.dispatch(new UpRequestAction(id));
     }
 
-    public goToRequest(request: DefaultHttpRequest) {
-        this.router.navigate([`/requests/${request.id}`]);
+    public goToRequest(requestId: string) {
+        this.router.navigate([`/requests/${requestId}`]);
+        this.selectRequest(requestId);
     }
 }

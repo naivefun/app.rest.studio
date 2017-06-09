@@ -6,7 +6,7 @@
     <li *ngFor="let request of requests"
         class="link d-flex"
         [ngClass]="{active: request.id === activeRequestId}"
-        (click)="goToRequest(request)">
+        (click)="goToRequest(request.id)">
         <span class="title">{{request.title || request.url || request.id}}</span>
         <div class="menu">
             <a class="ion-close" (click)="deleteRequest(request.id, $event)"> </a>

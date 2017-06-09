@@ -1,17 +1,17 @@
 import * as _ from 'lodash';
 import { createSelector } from 'reselect';
-import { RequestsState } from './state';
+import { IRequestsState } from './state';
 
-export const getRequests = (state: RequestsState) => {
+export const getRequests = (state: IRequestsState) => {
     let result = _.orderBy(state.requests, 'createdAt', 'desc');
     return result;
 };
 
-export const getResponses = (state: RequestsState) => {
+export const getResponses = (state: IRequestsState) => {
     return state.responses;
 };
 
-export const getActiveRequestId = (state: RequestsState) =>
+export const getActiveRequestId = (state: IRequestsState) =>
     state.activeRequestId;
 
 export const getActiveRequest = createSelector(getRequests, getActiveRequestId,

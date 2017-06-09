@@ -1,34 +1,28 @@
 import { DefaultHttpRequest } from '../../@model/http/http-request';
 import { DefaultHttpResponse } from '../../@model/http/http-response';
 
-export interface RequestsState {
+export interface IRequestsState {
     requests: DefaultHttpRequest[];
-    pages: any[];
-    entities: any[];
-    collections: any[];
+    // pages: any[];
+    // entities: any[];
+    // collections: any[];
     responses: { [id: string]: DefaultHttpResponse };
 
-    activeRequestId: string;
-    activePageId: string;
-    activeEntityId: string;
-    activeCollectionId: string;
+    activeRequestId?: string;
+    // activePageId: string;
+    // activeEntityId: string;
+    // activeCollectionId: string;
 
     // loading status
-    loadingRequests: boolean;
-    savingRequest: boolean;
+    loadingRequests?: boolean;
+    savingRequest?: boolean;
 }
 
-export const RequestsInitialState: RequestsState = {
+export const RequestsInitialState: IRequestsState = {
     requests: [],
-    pages: [],
-    entities: [],
-    collections: [],
     responses: {},
 
     activeRequestId: null,
-    activePageId: null,
-    activeEntityId: null,
-    activeCollectionId: null,
 
     loadingRequests: false,
     savingRequest: false,

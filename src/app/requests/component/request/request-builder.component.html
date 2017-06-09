@@ -3,7 +3,7 @@
         <a *ngFor="let field of ['query', 'header', 'path', 'body', 'description']"
            class="option"
            [ngClass]="{on: !off[field]}"
-           (click)="toggoleField(field)">{{field | rsTitleCase}}</a>
+           (click)="toggleField(field)">{{field | rsTitleCase}}</a>
     </div>
     <div class="flex-1">
         <div class="btn-group">
@@ -18,16 +18,16 @@
         </div>
     </div>
 </div>
-<div class="content" *ngIf="_request">
+<div class="content" *ngIf="iRequest">
     <div class="section">
         <div class="b" style="padding: .7em 0;">
-            <input class="form-control b" placeholder="request title" [(ngModel)]="_request.title"
+            <input class="form-control b" placeholder="request title" [(ngModel)]="iRequest.title"
                    (change)="emitChanges()"/>
         </div>
         <div style="display: flex; align-items: center;">
             <div class="btn-group">
                 <a class="link dropdown-toggle" data-toggle="dropdown">
-                    {{_request.method}}
+                    {{iRequest.method}}
                 </a>
                 <div class="dropdown-menu">
                     <a *ngFor="let method of methods"
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div style="flex-grow: 100; margin-left: .5em;">
-                <input #urlInput type="text" class="form-control" [(ngModel)]="_request.url"
+                <input #urlInput type="text" class="form-control" [(ngModel)]="iRequest.url"
                        (change)="emitChanges()"/>
             </div>
         </div>
@@ -46,7 +46,7 @@
             <div class="mr-auto"><b>Query</b></div>
             <a class="link" (click)="extractQuery()">Extract From URL</a>
         </div>
-        <request-param-group [paramGroup]="_request.queryParams"
+        <request-param-group [paramGroup]="iRequest.queryParams"
                              (paramsUpdated)="emitChanges()">
         </request-param-group>
     </div>
@@ -55,7 +55,7 @@
             <div class="mr-auto"><b>Header</b></div>
             <a class="ion-plus link" (click)="pickHeaders()"> Insert</a>
         </div>
-        <request-param-group [paramGroup]="_request.headerParams"
+        <request-param-group [paramGroup]="iRequest.headerParams"
                              (paramsUpdated)="emitChanges()">
         </request-param-group>
     </div>
@@ -64,23 +64,23 @@
             <div class="mr-auto"><b>Body</b></div>
             <a class="dropdown">
                 <a class="dropdown-toggle link" data-toggle="dropdown">
-                    {{_request?.mode || 'none'}}
+                    {{iRequest?.mode || 'none'}}
                 </a>
-                <div class="dropdown-menu dropdown-menu-right">
+                <div class="dropdown-menu dropdown-menu-right font-small b">
                     <a class="dropdown-item" *ngFor="let mode of modes"
-                       (click)="setMode(mode)">{{mode}}</a>
+                       (click)="setBodyMode(mode)">{{mode}}</a>
                 </div>
             </a>
         </div>
-        <request-param-group [paramGroup]="_request.formParams"
+        <request-param-group [paramGroup]="iRequest.formParams"
                              (paramsUpdated)="emitChanges()"
-                             *ngIf="bodyEditor === 'form'">
+                             *ngIf="bodyEditor === $BodyEditor.FORM">
         </request-param-group>
-        <text-editor [text]="_request?.body" [minLines]="5" [maxLines]="30" [mode]="editorMode"
+        <text-editor [text]="iRequest?.body" [minLines]="5" [maxLines]="30" [mode]="editorMode"
                      [lineNumbers]="true" [wrap]="true" [observeText]="true"
                      (onTextChanged)="updateBody($event.text)"
-                     [hidden]="bodyEditor !== 'editor'"></text-editor>
-        <div *ngIf="bodyEditor === 'bin'">
+                     [hidden]="bodyEditor !== $BodyEditor.EDITOR"></text-editor>
+        <div *ngIf="bodyEditor === $BodyEditor.BIN">
             <h3>Coming soon</h3>
         </div>
         <div *ngIf="!bodyEditor">
@@ -92,7 +92,7 @@
             <div class="mr-auto"><b>Description</b></div>
         </div>
         <textarea class="form-control" rows="5"
-                  (change)="updateDescription($event.target.value)">{{_request?.description}}</textarea>
+                  (change)="updateDescription($event.target.value)">{{iRequest?.description}}</textarea>
     </div>
 </div>
-<header-picker #headerPicker (onHeadersPicker)="headersPicked($event)"></header-picker>
+<header-picker #headerPicker (onHeadersPicker)="addHeaders($event)"></header-picker>

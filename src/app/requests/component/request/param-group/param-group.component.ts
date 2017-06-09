@@ -3,13 +3,11 @@ import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { HttpRequestParam } from '../../../../@model/http/http-request';
 import { BaseComponent } from '../../../../@shared/components/base.component';
-import { State } from '../../../../store/reducer';
-import { UpdateRequestParamsAction } from '../../../store/action';
 
 @Component({
     selector: 'request-param-group',
     templateUrl: './param-group.component.html',
-    styles: [ `
+    styles: [`
         .off input {
             color: #ddd;
             font-weight: 300;
@@ -27,7 +25,7 @@ import { UpdateRequestParamsAction } from '../../../store/action';
         .icons a.off:hover {
             color: #999;
         }
-    ` ]
+    `]
 })
 export class ParamGroupComponent extends BaseComponent {
     @Output() public paramsUpdated = new EventEmitter<HttpRequestParam[]>();
@@ -42,7 +40,7 @@ export class ParamGroupComponent extends BaseComponent {
         this._paramGroup = paramGroup || [];
     }
 
-    constructor(private store: Store<State>) {
+    constructor() {
         super();
     }
 

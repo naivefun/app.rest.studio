@@ -1,10 +1,9 @@
+import { NgRedux, select } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { State } from '../store/reducer';
-import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { DefaultHttpRequest } from '../@model/http/http-request';
-import { getRequestsActiveId, getRequestsRequests } from '../store/selector';
-import { LoadRequestsAction } from './store/action';
+import { IAppState } from '../@store/root.types';
+import { RequestsActions } from './@store/actions';
 
 @Component({
     selector: 'requests',
@@ -14,15 +13,16 @@ import { LoadRequestsAction } from './store/action';
 export class RequestsComponent implements OnInit {
     public items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6];
 
-    public requests$: Observable<DefaultHttpRequest[]>;
-    public activeRequestId$: Observable<string>;
+    @select(['requests', 'requests'])
+    public readonly requests$: Observable<DefaultHttpRequest[]>;
+    @select(['requests', 'activeRequestId'])
+    public readonly activeRequestId$: Observable<string>;
 
-    constructor(private store: Store<State>) {
-        this.activeRequestId$ = store.select(getRequestsActiveId);
-        this.requests$ = store.select(getRequestsRequests);
+    constructor(private store: NgRedux<IAppState>,
+                private actions: RequestsActions) {
     }
 
     public ngOnInit() {
-        this.store.dispatch(new LoadRequestsAction());
+        this.store.dispatch(this.actions.loadRequests());
     }
 }

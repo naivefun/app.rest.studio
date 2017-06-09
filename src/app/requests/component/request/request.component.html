@@ -1,8 +1,11 @@
 <request-builder [id]="id" [request]="request$ | async"
-                 (onSendRequest)="onSendRequest($event)"
-                 (onRequestUpdated)="onRequestUpdated($event)"></request-builder>
+                 (onSendRequest)="sendRequest($event)"
+                 (onRequestUpdated)="updateRequest($event)">
+</request-builder>
+
 <response-viewer [id]="id" [request]="request$ | async"
                  [response]="response$ | async"
                  [syncAccounts]="syncAccounts$ | async"
-                 (onRequestUpdated)="onRequestUpdated($event)"
-                 (onClearResponse)="onClearResponse($event)"></response-viewer>
+                 (onRequestUpdated)="updateRequest($event)"
+                 (onClearResponse)="clearResponse($event)">
+</response-viewer>

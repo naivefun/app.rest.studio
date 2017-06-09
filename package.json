@@ -84,7 +84,6 @@
     "@ngrx/core": "^1.2.0",
     "@ngrx/effects": "^2.0.1",
     "@ngrx/router-store": "^1.2.5",
-    "@ngrx/store": "^2.2.1",
     "@ngrx/store-devtools": "^3.2.4",
     "axios": "^0.15.3",
     "clipboard": "^1.6.1",

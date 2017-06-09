@@ -1,5 +1,5 @@
 //// global reducers
-import { RequestsState } from '../requests/store/state';
+import { IRequestsState } from '../requests/store/state';
 import { reducer as RequestsReducer } from '../requests/store/reducer';
 import { reducer as ConfigReducer } from './config-reducer';
 import { ActionReducer, combineReducers } from '@ngrx/store';
@@ -9,7 +9,7 @@ import { LocalConfig } from '../@shared/config.service';
 export interface State {
     router: RouterState;
     config: LocalConfig;
-    requests: RequestsState;
+    requests: IRequestsState;
 }
 
 const reducers = {

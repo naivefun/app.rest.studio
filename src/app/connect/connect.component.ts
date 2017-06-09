@@ -1,13 +1,9 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { State } from '../store/reducer';
 import { Observable } from 'rxjs/Observable';
-import { SyncProviderAccount, SyncProvider } from '../@model/sync';
-import { getConnections } from '../store/selector';
-import { SyncService } from '../@shared/sync/sync.service';
+import { SyncProvider, SyncProviderAccount } from '../@model/sync';
 import { ConfigService } from '../@shared/config.service';
-import { UpdateConfigAction } from '../store/config-reducer';
-import * as _ from 'lodash';
+import { SyncService } from '../@shared/sync/sync.service';
 
 declare const global_: any;
 
@@ -20,9 +16,7 @@ export class ConnectComponent {
     public connections: SyncProviderAccount[];
 
     constructor(public config: ConfigService,
-                private syncService: SyncService,
-                private store: Store<State>) {
-        this.connections$ = store.select(getConnections);
+                private syncService: SyncService) {
     }
 
     // TODO: abstract for all providers
@@ -46,7 +40,7 @@ export class ConnectComponent {
                         .then(result => {
                             // show actual connected accounts for choose
                             console.debug('persist connection result', result);
-                            this.store.dispatch(new UpdateConfigAction(this.config.localConfig));
+                            // this.store.dispatch(new UpdateConfigAction(this.config.localConfig));
                         });
                 });
         };
@@ -55,7 +49,7 @@ export class ConnectComponent {
     public deleteAccount(con: SyncProviderAccount) {
         this.config.deleteSyncAccount(con.id)
             .then(result => {
-                this.store.dispatch(new UpdateConfigAction(this.config.localConfig));
+                // this.store.dispatch(new UpdateConfigAction(this.config.localConfig));
             });
     }
 }
